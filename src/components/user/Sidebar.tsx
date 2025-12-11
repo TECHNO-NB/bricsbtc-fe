@@ -27,6 +27,7 @@ const Sidebar = ({ children }: any) => {
 
   const userData: any = useSelector((state: any) => state.user);
 
+  // KYC statuses: PENDING, APPROVED, REJECTED
   const kycStatus = userData?.kycStatus;
 
   const navigation = [
@@ -37,19 +38,17 @@ const Sidebar = ({ children }: any) => {
     { name: "Investment", icon: DollarSign, href: "/user/investment" },
   ];
 
-  // PENDING + REJECTED → only Dashboard + Message
-  const restrictedNav =
+  // ------------------------------------------------
+  // LIMIT PENDING + REJECTED TO SAME TWO PAGES
+  // ------------------------------------------------
+  const allowedNavigation =
     kycStatus === "PENDING" || kycStatus === "REJECTED"
       ? navigation.filter(
-          (item) =>
-            item.name === "Dashboard" || item.name === "Message"
+          (item) => item.name === "Dashboard" || item.name === "Message"
         )
       : navigation;
 
-  // Always allowed items (notification & settings)
-  const alwaysAllowed = ["/user/notification", "/user/setting"];
-
-  // Auto Toast Messages
+  
   useEffect(() => {
     toast.dismiss();
 
@@ -62,15 +61,12 @@ const Sidebar = ({ children }: any) => {
     }
   }, [kycStatus]);
 
-  // BLOCK Restricted Pages EXCEPT Notification & Settings
+  // ------------------------------------------------
+  // BLOCK OTHER ROUTES IF PENDING OR REJECTED
+  // ------------------------------------------------
   useEffect(() => {
     if (kycStatus === "PENDING" || kycStatus === "REJECTED") {
-      const allowed = [
-        "/user/dashboard",
-        "/user/message",
-        "/user/notification",
-        "/user/setting",
-      ];
+      const allowed = ["/user/dashboard", "/user/message"];
 
       if (!allowed.includes(pathname)) {
         router.push("/user/dashboard");
@@ -97,7 +93,7 @@ const Sidebar = ({ children }: any) => {
         </div>
 
         <div className="space-y-2">
-          {restrictedNav.map((item) => {
+          {allowedNavigation.map((item) => {
             const isActive = pathname === item.href;
 
             return (
@@ -171,7 +167,7 @@ const Sidebar = ({ children }: any) => {
 
       {/* HEADER */}
       <header className="fixed top-0 right-0 h-[10vh] w-full md:w-[calc(100%-16rem)] bg-zinc-950/90 backdrop-blur-xl border-b border-yellow-500/60 z-20">
-        <div className="flex items-center md:justify-between h-full px-1 md:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-full px-1 md:px-6 lg:px-8">
           <div className="flex items-center">
             <Button
               variant="ghost"
@@ -181,7 +177,7 @@ const Sidebar = ({ children }: any) => {
             >
               <Menu className="w-6 h-6" />
             </Button>
-            <h2 className="text-xl opacity-0 md:opacity-100 md:text-2xl font-bold tracking-tight text-white truncate">
+            <h2 className="text-xl  md:text-2xl font-bold tracking-tight text-white truncate">
               Welcome Back
             </h2>
           </div>
@@ -208,26 +204,20 @@ const Sidebar = ({ children }: any) => {
             </div>
 
             <Button
-              onClick={() => router.push("/user/setting")}
               variant="ghost"
               size="icon"
-              className={
-                pathname === "/user/setting"
-                  ? "text-yellow-500"
-                  : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
-              }
+              className="text-zinc-400 hover:bg-zinc-900 hover:text-white"
             >
               <Settings className="w-5 h-5" />
             </Button>
-
-            {kycStatus === "APPROVED" && (
+            {kycStatus === "APPROVED" ? (
               <Button
                 onClick={() => router.push("/user/trade")}
                 className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
               >
                 <DollarSign className="w-4 h-4 mr-2" /> Buy
               </Button>
-            )}
+            ) : null}
           </div>
         </div>
       </header>
