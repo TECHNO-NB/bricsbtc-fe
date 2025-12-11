@@ -30,7 +30,6 @@ import Trade from "@/components/home/Trade";
 import BricsBTCApp from "@/components/home/ImageGallery";
 import LearnPage from "./learn/page";
 import { useRouter } from "next/navigation";
-const router=useRouter();
 
 // Mock Data for the Ticker
 const MARKET_TICKER = [
@@ -41,6 +40,7 @@ const MARKET_TICKER = [
 ];
 
 export default function LandingPage() {
+  const router=useRouter();
   return (
     <motion.div className="min-h-screen bg-slate-950 text-white selection:bg-orange-500/30">
       {/* Navbar */}
