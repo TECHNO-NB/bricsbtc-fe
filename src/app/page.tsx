@@ -27,6 +27,11 @@ import { motion } from "motion/react";
 import ChooseCrypto from "@/components/home/ChooseCrypto";
 import Trade from "@/components/home/Trade";
 
+import BricsBTCApp from "@/components/home/ImageGallery";
+import LearnPage from "./learn/page";
+import { useRouter } from "next/navigation";
+const router=useRouter();
+
 // Mock Data for the Ticker
 const MARKET_TICKER = [
   { pair: "BTC/USDT", price: "64,230.50", change: "+2.4%", isUp: true },
@@ -128,7 +133,7 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-            <Link href="/dashboard">
+            <Link href="/auth/login">
               <Button
                 size="lg"
                 className="h-12 px-8 text-base bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 border-0 shadow-lg shadow-orange-500/20"
@@ -137,6 +142,7 @@ export default function LandingPage() {
               </Button>
             </Link>
             <Button
+              onClick={()=> router.push("/auth/login")}
               size="lg"
               variant="outline"
               className="h-12 px-8 text-base border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white bg-slate-950/50 backdrop-blur-sm"
@@ -153,7 +159,7 @@ export default function LandingPage() {
               {/* Sidebar */}
               <div className="col-span-2 h-64 bg-slate-800/50 rounded-lg animate-pulse" />
               {/* Chart */}
-           <div className="col-span-7 h-64 bg-slate-800/50 rounded-lg border border-white/5 relative overflow-hidden">
+              <div className="col-span-7 h-64 bg-slate-800/50 rounded-lg border border-white/5 relative overflow-hidden">
                 <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-orange-500/20 to-transparent" />
                 <Image
                   src={coverpic}
@@ -242,13 +248,19 @@ export default function LandingPage() {
 
       {/* trade */}
       <section className="   ">
-        <Trade/>
+        <Trade />
       </section>
       {/* --- Crypto Listing section Section --- */}
       <section className="py-6 border-y border-white/5 bg-slate-900/20 px-4 flex  md:pl-26 lg:pl-26 ">
-      <ChooseCrypto/>
+        <ChooseCrypto />
       </section>
+      {/* learn */}
+      <LearnPage />
 
+      {/* Image */}
+      <section className="py-6 mt-10 border-y border-white/5 bg-slate-900/20 px-4 flex  md:pl-26 lg:pl-26 ">
+        <BricsBTCApp />
+      </section>
 
       {/* about */}
       <section id="about">
@@ -260,7 +272,7 @@ export default function LandingPage() {
           <h2 className="text-2xl font-bold mb-6">
             Start your crypto journey today
           </h2>
-          <Link href="/dashboard">
+          <Link href="/auth/register">
             <Button
               size="lg"
               className="bg-white text-slate-950 hover:bg-slate-200"

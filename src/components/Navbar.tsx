@@ -35,16 +35,14 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-            <Link href="#" className="hover:text-white transition-colors">
-              Markets
+            <Link href="/" className="hover:text-white transition-colors">
+              Home
             </Link>
-            <Link href="#" className="hover:text-white transition-colors">
-              Exchange
-            </Link>
-            <Link href="#" className="hover:text-white transition-colors">
+           
+            <Link href="/auth/login" className="hover:text-white transition-colors">
               Earn
             </Link>
-            <Link href="#" className="hover:text-white transition-colors">
+            <Link href="/learn" className="hover:text-white transition-colors">
               Learn
             </Link>
           </div>
@@ -52,13 +50,13 @@ const Navbar = () => {
           {/* Buttons */}
           <div className="flex items-center gap-4">
             <Link
-              href="/login"
+              href="/auth/login"
               className="hidden text-sm font-medium text-slate-300 hover:text-white md:block"
             >
               Log In
             </Link>
 
-            <Link href="/dashboard">
+            <Link href="/auth/register">
               <Button className="bg-white text-slate-950 hover:bg-slate-200 font-semibold">
                 Sign Up
               </Button>
@@ -93,26 +91,24 @@ const Navbar = () => {
 
         {/* Sidebar Menu */}
         <div className="mt-10 flex flex-col gap-6 text-lg font-medium">
-          <Link href="#" onClick={() => setMobileOpen(false)}>
-            Markets
+          <Link href="/" onClick={() => setMobileOpen(false)}>
+            Home
           </Link>
-          <Link href="#" onClick={() => setMobileOpen(false)}>
-            Exchange
-          </Link>
-          <Link href="#" onClick={() => setMobileOpen(false)}>
+         
+          <Link href="/auth/login" onClick={() => setMobileOpen(false)}>
             Earn
           </Link>
-          <Link href="#" onClick={() => setMobileOpen(false)}>
+          <Link href="/learn" onClick={() => setMobileOpen(false)}>
             Learn
           </Link>
   <div className="flex flex-col gap-4">
 
-          <Link href="/login" onClick={() => setMobileOpen(false)}>
+          <Link href="/auth/login" onClick={() => setMobileOpen(false)}>
             <Button className="w-full bg-white text-slate-950 hover:bg-slate-200 font-semibold">
               Log In
             </Button>
           </Link>
-          <Link href="/dashboard" className="" onClick={() => setMobileOpen(false)}>
+          <Link href="/auth/register" className="" onClick={() => setMobileOpen(false)}>
             <Button className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700  font-semibold">
               Sign Up
             </Button>
