@@ -7,7 +7,7 @@ import coin from "@/../public/coin.png";
 import coin2 from "@/../public/coin2.png";
 import coin3 from "@/../public/coin3.png";
 import coin4 from "@/../public/coin4.png";
-import logo from "@/../public/logo.jpeg";
+
 import coverpic from "@/../public/landingcover.jpeg";
 import {
   ArrowRight,
