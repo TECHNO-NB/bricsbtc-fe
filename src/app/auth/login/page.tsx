@@ -9,11 +9,12 @@ import { Label } from "@/components/ui/label";
 import axios from "axios";
 // import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
-// import { useRouter } from "next/navigation";  // optional if redirect needed
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation"; // optional if redirect needed
 
 export default function LoginPage() {
   // const { toast } = useToast();
-  // const router = useRouter();  // optional if redirect needed
+  const router = useRouter(); // optional if redirect needed
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,21 +37,15 @@ export default function LoginPage() {
         }
       );
 
-      // toast({
-      //   title: "Login Successful",
-      //   description: "Welcome back!",
-      // });
+      toast.success("Login Successful");
 
-      // OPTIONAL REDIRECT
-      // router.push("/dashboard");
-
+      if (res.data.data.role === "user") {
+        router.push("/user/dashboard");
+      } else if (res.data.data.role === "admin") {
+        router.push("/admin/dashboard");
+      }
     } catch (error: any) {
-      // toast({
-      //   title: "Login Failed",
-      //   description:
-      //     error?.response?.data?.message || "Invalid email or password",
-      //   variant: "destructive",
-      // });
+      toast.error("Login failed");
     } finally {
       setIsLoading(false);
     }
