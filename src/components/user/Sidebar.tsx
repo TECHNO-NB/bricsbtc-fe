@@ -204,6 +204,7 @@ const Sidebar = ({ children }: any) => {
             </div>
 
             <Button
+            onClick={()=>router.push("/user/setting")}
               variant="ghost"
               size="icon"
               className="text-zinc-400 hover:bg-zinc-900 hover:text-white"

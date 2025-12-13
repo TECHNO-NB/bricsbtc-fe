@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { WrapperLayout } from "@/components/WrapperLayout";
+import Script from "next/script"; 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +31,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <WrapperLayout>{children}</WrapperLayout>
+
+        
+        <Script src="//code.tidio.co/yuci5joj6i4r2kfcb9gpencngirkdx8d.js" async></Script>
+
+        <Toaster />
       </body>
     </html>
   );

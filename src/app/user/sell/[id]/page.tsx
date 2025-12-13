@@ -59,34 +59,36 @@ export default function SellUSDTInterface() {
   }, [offerId]);
 
   // Handle USDT Input Change + MIN/MAX LIMIT Validation
-  const handleUSDTChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setAmountUSDT(value);
-    setError(""); // reset error
+ const handleUSDTChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value;
+  setAmountUSDT(value);
+  setError(""); // reset error
 
-    if (!offer) return;
+  if (!offer) return;
 
-    const num = Number(value);
-    if (!value || isNaN(num) || num <= 0) {
-      setAmountUSD("");
-      return;
-    }
+  const num = Number(value);
+  if (!value || isNaN(num) || num <= 0) {
+    setAmountUSD("");
+    return;
+  }
 
-    // convert USDT to USD
-    const calculated = num * offer.price;
-    setAmountUSD(calculated.toFixed(2));
+  // Convert crypto to USD
+  // offer.price = crypto per 1 USD, so USD = crypto / offer.price
+  const calculatedUSD = num / offer.price;
+  setAmountUSD(calculatedUSD.toFixed(2));
 
-    // ---------- LIMIT VALIDATION ----------
-    if (calculated < offer.minLimit) {
-      setError(
-        `Minimum trade amount is $${offer.minLimit.toLocaleString()} USD`
-      );
-    } else if (calculated > offer.maxLimit) {
-      setError(
-        `Maximum trade amount is $${offer.maxLimit.toLocaleString()} USD`
-      );
-    }
-  };
+  // Limit validation (in USD)
+  if (calculatedUSD < offer.minLimit) {
+    setError(
+      `Minimum trade amount is $${offer.minLimit.toLocaleString()} USD`
+    );
+  } else if (calculatedUSD > offer.maxLimit) {
+    setError(
+      `Maximum trade amount is $${offer.maxLimit.toLocaleString()} USD`
+    );
+  }
+};
+
 
   const handleSell = async () => {
     if (!offer) return;
@@ -108,7 +110,7 @@ export default function SellUSDTInterface() {
         {
           offerId: offer.id,
           buyerId: userData.id,
-          amount: Number(amountUSDT),
+          amount:amountUSDT,
         }
       );
 
@@ -169,7 +171,7 @@ export default function SellUSDTInterface() {
                   How much do you want to sell?
                 </CardTitle>
                 <p className="text-sm text-slate-400">
-                  Enter the amount of USDT you want to sell.
+                  Enter the amount of {offer.crypto.name} you want to sell.
                 </p>
               </CardHeader>
 
@@ -178,7 +180,7 @@ export default function SellUSDTInterface() {
                   {/* YOU SELL */}
                   <div className="space-y-2">
                     <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1">
-                      You Sell
+                      You Sell ({offer.crypto.name}({offer.crypto.symbol}))
                     </label>
 
                     <Input
@@ -195,7 +197,7 @@ export default function SellUSDTInterface() {
                   {/* YOU RECEIVE */}
                   <div className="space-y-2">
                     <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1">
-                      You Receive
+                      You Receive ($USD)
                     </label>
 
                     <Input
@@ -233,7 +235,7 @@ export default function SellUSDTInterface() {
                       Rate
                     </span>
                     <p className="text-sm font-semibold text-emerald-400">
-                      1 USDT ≈ ${offer.price.toFixed(2)} USD
+                      1 USD ≈ {offer.price} {offer.crypto.symbol}
                     </p>
                   </div>
                 </div>
@@ -245,7 +247,7 @@ export default function SellUSDTInterface() {
                   onClick={handleSell}
                   disabled={isLoading || Boolean(error)}
                 >
-                  {isLoading ? "Processing..." : "Sell Tether Now"}
+                  {isLoading ? "Processing..." : `Sell ${offer.crypto.name} Now`}
                 </Button>
               </CardContent>
             </Card>
@@ -261,11 +263,11 @@ export default function SellUSDTInterface() {
 
                 <div className="flex items-baseline gap-2 mt-2">
                   <span className="text-2xl font-bold text-white">
-                    1 {offer.crypto.symbol}
+                    1 USD
                   </span>
                   <span className="text-slate-500">=</span>
                   <span className="text-xl font-bold text-emerald-400">
-                    ${offer.price.toFixed(2)} USD
+                    {offer.price} {offer.crypto.symbol}
                   </span>
                 </div>
               </CardContent>

@@ -388,7 +388,7 @@ const Page = () => {
 
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-200">
-                Min Limit
+                Min Limit $
               </label>
               <Input
                 type="number"
@@ -400,7 +400,7 @@ const Page = () => {
 
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-200">
-                Max Limit
+                Max Limit $
               </label>
               <Input
                 type="number"

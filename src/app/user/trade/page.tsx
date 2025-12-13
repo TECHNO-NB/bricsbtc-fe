@@ -52,8 +52,7 @@ export default function CryptoMarket() {
   const [search, setSearch] = useState("");
   const [cryptoFilter, setCryptoFilter] = useState<string>("");
 
-
-  const router=useRouter();
+  const router = useRouter();
 
   // 🔥 Fetch Offers from API
   const fetchOffers = async () => {
@@ -92,8 +91,7 @@ export default function CryptoMarket() {
       return matchSearch && matchCrypto;
     });
 
-
-    const handleClick = (offerId:string) => {
+  const handleClick = (offerId: string) => {
     if (activeTab === "BUY") {
       router.push(`/user/buy/${offerId}`);
     } else {
@@ -270,13 +268,14 @@ export default function CryptoMarket() {
                     {/* Right */}
                     <div className="lg:w-1/4 text-right flex flex-col items-end gap-2">
                       <p className="text-2xl font-bold text-emerald-400">
-                        ${offer.price}
+                        {activeTab === "BUY" ? `$${offer.price}` : `${offer.price} ${offer.crypto.symbol}`}
                       </p>
+
                       <p className="text-xs text-slate-500">
-                        Price per {offer.crypto.symbol}
+                        Price per {activeTab === "BUY" ? offer.crypto.symbol : `USD`}
                       </p>
                       <Button
-                        onClick={()=>handleClick(offer.id)}
+                        onClick={() => handleClick(offer.id)}
                         className={`px-6 rounded-xl font-semibold transition-all ${
                           activeTab === "BUY"
                             ? "bg-emerald-500 hover:bg-emerald-600"

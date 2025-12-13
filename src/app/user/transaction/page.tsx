@@ -1,14 +1,8 @@
-'use client'
+'use client';
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Search,
-  Download,
-  TrendingUp,
-  ArrowUpRight,
-  ArrowDownRight,
-  Clock,
-} from "lucide-react";
+import { Search, Download, TrendingUp, ArrowUpRight, ArrowDownRight, Clock } from "lucide-react";
 import { useSelector } from "react-redux";
 
 interface TransactionHistoryProps {
@@ -26,6 +20,8 @@ interface Transaction {
   method: string;
   description: string;
   hash?: string;
+  createdAt: string;
+  timeLeft?: number; // in seconds
 }
 
 const TransactionHistory: React.FC<TransactionHistoryProps> = ({ userId }) => {
@@ -34,29 +30,40 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ userId }) => {
   const [filterType, setFilterType] = useState("all");
   const [dateRange, setDateRange] = useState("7days");
   const [searchQuery, setSearchQuery] = useState("");
- const userData=useSelector((state:any)=> state.user)
+
+  const userData = useSelector((state: any) => state.user);
+
+  // Fetch transactions
   useEffect(() => {
     const fetchTransactions = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/transactions/${userData.id}`
-        );
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/transactions/${userData.id}`);
         const data = res.data.data || [];
 
-        // Map nested API response to flat structure
-        const mapped: Transaction[] = data.map((tx: any) => ({
-          id: tx.id,
-          type: "Trade", 
-          status: tx.status.toLowerCase(),
-          amount: tx.amount,
-          currency: tx.offer.crypto.symbol,
-          date: new Date(tx.createdAt).toLocaleDateString(),
-          time: new Date(tx.createdAt).toLocaleTimeString(),
-          method: tx.offer.paymentMethod?.name || "-",
-          description: `${tx.offer.type} ${tx.amount} ${tx.offer.crypto.symbol}`,
-          hash: tx.id,
-        }));
+        const mapped: Transaction[] = data.map((tx: any) => {
+          // Frontend hardcoded countdown: 1 hour from createdAt
+          const now = new Date().getTime();
+          const createdAt = new Date(tx.createdAt).getTime();
+          const windowSeconds = 60 * 60; // 1 hour
+          const secondsPassed = Math.floor((now - createdAt) / 1000);
+          const timeLeft = windowSeconds - secondsPassed > 0 ? windowSeconds - secondsPassed : 0;
+
+          return {
+            id: tx.id,
+            type: tx.offer.type === "BUY" ? "Buy" : "Sell",
+            status: tx.status.toLowerCase(),
+            amount: tx.amount,
+            currency: tx.offer.crypto.symbol,
+            date: new Date(tx.createdAt).toLocaleDateString(),
+            time: new Date(tx.createdAt).toLocaleTimeString(),
+            method: tx.offer.paymentMethod?.name || "-",
+            description: `${tx.offer.type} ${tx.amount} ${tx.offer.crypto.symbol}`,
+            hash: tx.id,
+            createdAt: tx.createdAt,
+            timeLeft,
+          };
+        });
 
         setTransactions(mapped);
       } catch (err) {
@@ -68,14 +75,28 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ userId }) => {
     };
 
     fetchTransactions();
-  }, [userId,userData.id]);
+  }, [userId, userData.id]);
+
+  // Countdown timer for pending trades
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTransactions(prev =>
+        prev.map(tx => {
+          if (tx.status === "pending" && tx.timeLeft && tx.timeLeft > 0) {
+            return { ...tx, timeLeft: tx.timeLeft - 1 };
+          }
+          return tx;
+        })
+      );
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   // Filter transactions
   const filteredTransactions = transactions.filter((tx) => {
-    // Filter by type
     if (filterType !== "all" && tx.type.toLowerCase() !== filterType) return false;
 
-    // Filter by date range
     if (dateRange !== "all") {
       const txDate = new Date(tx.date);
       const now = new Date();
@@ -85,7 +106,6 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ userId }) => {
       if (dateRange === "90days" && diffDays > 90) return false;
     }
 
-    // Filter by search
     if (
       searchQuery &&
       !tx.description.toLowerCase().includes(searchQuery.toLowerCase()) &&
@@ -101,7 +121,8 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ userId }) => {
         return <ArrowDownRight className="w-4 h-4" />;
       case "Withdrawal":
         return <ArrowUpRight className="w-4 h-4" />;
-      case "Trade":
+      case "Buy":
+      case "Sell":
         return <TrendingUp className="w-4 h-4" />;
       default:
         return <Clock className="w-4 h-4" />;
@@ -114,7 +135,8 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ userId }) => {
         return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
       case "Withdrawal":
         return "bg-rose-500/10 text-rose-400 border-rose-500/20";
-      case "Trade":
+      case "Buy":
+      case "Sell":
         return "bg-amber-500/10 text-amber-400 border-amber-500/20";
       default:
         return "bg-gray-500/10 text-gray-400 border-gray-500/20";
@@ -122,16 +144,23 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ userId }) => {
   };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case "completed":
         return "bg-emerald-500/10 text-emerald-400";
       case "pending":
         return "bg-amber-500/10 text-amber-400";
+      case "cancelled":
       case "failed":
         return "bg-rose-500/10 text-rose-400";
       default:
         return "bg-gray-500/10 text-gray-400";
     }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -171,7 +200,8 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ userId }) => {
                 <option value="all">All Types</option>
                 <option value="deposit">Deposits</option>
                 <option value="withdrawal">Withdrawals</option>
-                <option value="trade">Trades</option>
+                <option value="buy">Buy</option>
+                <option value="sell">Sell</option>
               </select>
 
               <select
@@ -204,6 +234,7 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ userId }) => {
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Method</th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
                     <th className="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Amount</th>
+                    <th className="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Timer</th>
                   </tr>
                 </thead>
 
@@ -245,6 +276,13 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ userId }) => {
                             {tx.amount > 0 ? "+" : ""}{tx.amount} {tx.currency}
                           </span>
                         </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                        {tx.status === "pending" ? (
+                          <span className="text-yellow-400 font-mono text-sm">{tx.timeLeft ? formatTime(tx.timeLeft) : "00:00"}</span>
+                        ) : (
+                          <span className="text-gray-400 text-sm">--</span>
+                        )}
                       </td>
                     </tr>
                   ))}

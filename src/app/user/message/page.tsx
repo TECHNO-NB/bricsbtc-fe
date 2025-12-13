@@ -5,6 +5,7 @@ import { User, Mail, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 // ShadCN-like Card
 const Card = ({ children }: { children: React.ReactNode }) => (
@@ -20,14 +21,16 @@ const Page = () => {
   const [filtered, setFiltered] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const userData = useSelector((state: any) => state.user);
 
   // ====================== FETCH ADMINS USING AXIOS ======================
   const fetchAdmins = async () => {
     try {
       const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/users/admins`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/users/admins/${userData.id}`
       );
       if (data.success) {
+        console.log(data);
         setAdmins(data.data);
         setFiltered(data.data);
       }
@@ -41,7 +44,7 @@ const Page = () => {
   // Fetch admins on mount
   useEffect(() => {
     fetchAdmins();
-  }, []);
+  }, [userData.id]);
 
   // ====================== SEARCH FILTER ======================
   useEffect(() => {
@@ -89,27 +92,39 @@ const Page = () => {
           </p>
         )}
 
-        {filtered?.length > 0 && filtered?.map((admin) => (
-          <Card key={admin.id}>
-            <div
-              onClick={() => router.push(`/user/chat/${admin.id}`)}
-              className="flex items-center gap-4 cursor-pointer"
-            >
-              <div className="h-12 w-12 rounded-full bg-yellow-500 flex items-center justify-center shadow-md">
-                <User className="h-6 w-6" />
-              </div>
+        {filtered?.length > 0 &&
+          filtered?.map((admin) => (
+            <Card key={admin.id}>
+              <div className="w-full h-full relative">
+                {/* ================= Unread Messages Badge ================= */}
+                {admin.unreadMessages > 0 && (
+                  <p className="absolute right-0 top-1/2 -translate-y-1/2 min-w-8 min-h-8 flex items-center justify-center text-xl bg-yellow-400 rounded-full text-red-500 font-bold">
+                    {admin.unreadMessages}
+                  </p>
+                )}
 
-              <div className="flex flex-col">
-                <span className="font-semibold text-lg">{admin.fullName}</span>
+                <div
+                  onClick={() => router.push(`/user/chat/${admin.id}`)}
+                  className="flex items-center gap-4 cursor-pointer"
+                >
+                  <div className="h-12 w-12 rounded-full bg-yellow-500 flex items-center justify-center shadow-md">
+                    <User className="h-6 w-6" />
+                  </div>
 
-                <span className="text-sm flex items-center text-neutral-400">
-                  <Mail className="h-4 w-4 mr-1" />
-                  {admin.email}
-                </span>
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-lg">
+                      {admin.fullName}
+                    </span>
+
+                    <span className="text-sm flex items-center text-neutral-400">
+                      <Mail className="h-4 w-4 mr-1" />
+                      {admin.email}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          ))}
       </div>
     </div>
   );

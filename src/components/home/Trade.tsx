@@ -3,8 +3,10 @@ import React from "react";
 import Image from "next/image";
 import pic from "@/../public/pic.svg";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 const Trade = () => {
+  const router=useRouter()
   return (
     <div className="relative w-full pb-20">
       {/* Background SVG */}
@@ -49,7 +51,7 @@ const Trade = () => {
             without having to hand over control of your funds.
           </p>
 
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white mt-4 px-6 py-6 text-lg rounded-xl shadow-lg">
+          <Button onClick={()=>router.push("/auth/login")} className="bg-orange-500 hover:bg-orange-600 text-white mt-4 px-6 py-6 text-lg rounded-xl shadow-lg">
             Start Trading
           </Button>
         </div>

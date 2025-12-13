@@ -205,7 +205,7 @@ export default function BuyUSDTInterface() {
 
                 {/* USDT Output */}
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1">You Receive</label>
+                  <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider ml-1">You Receive ({offer.crypto.name}({offer.crypto.symbol}))</label>
                   <div className="relative">
                     <Input
                       type="number"
@@ -237,7 +237,7 @@ export default function BuyUSDTInterface() {
                   disabled={isSubmitting || limitError !== ""}
                   className="w-full h-14 text-lg font-bold bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white shadow-lg rounded-xl"
                 >
-                  {isSubmitting ? "Processing..." : `Buy ${offer.crypto.symbol} Now`}
+                  {isSubmitting ? "Processing..." : `Buy ${offer.crypto.name} Now`}
                 </Button>
 
               </CardContent>
@@ -257,7 +257,7 @@ export default function BuyUSDTInterface() {
                   <div className="flex items-baseline gap-2">
                     <span className="text-2xl font-bold text-white">1 {offer.crypto.symbol}</span>
                     <span className="text-slate-500">=</span>
-                    <span className="text-2xl font-bold text-emerald-400">${offer.price.toFixed(2)}</span>
+                    <span className="text-2xl font-bold text-emerald-400">${offer.price} USD</span>
                   </div>
                 </div>
               </CardContent>

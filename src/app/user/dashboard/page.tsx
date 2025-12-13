@@ -11,6 +11,9 @@ import {
   ArrowDownLeft,
   ListOrdered,
 } from "lucide-react";
+import Image from "next/image";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 import {
   Card,
@@ -31,31 +34,42 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { useSelector } from "react-redux";
+import Link from "next/link";
+
+// --------------------------- TYPES ---------------------------
+interface UserState {
+  id: string;
+  fullName: string;
+  email: string;
+}
+
+interface Offer {
+  type: "BUY" | "SELL";
+  crypto: { symbol: string };
+}
+
+interface RecentActivity {
+  id: string;
+  amount: number;
+  createdAt: string;
+  offer: Offer;
+}
 
 interface DashboardResponse {
   totalTrades: number;
   totalBuyUSD: number;
   totalSellUSD: number;
-  recentActivity: {
-    id: string;
-    amount: number;
-    createdAt: string;
-    offer: {
-      type: "BUY" | "SELL";
-      crypto: { symbol: string };
-    };
-  }[];
+  recentActivity: RecentActivity[];
 }
 
-// ----------------------------------------------------------------------------
-// MAIN PAGE
-// ----------------------------------------------------------------------------
-const DashboardPage = () => {
+// --------------------------- MAIN PAGE ---------------------------
+const DashboardPage: React.FC = () => {
   const [data, setData] = useState<DashboardResponse | null>(null);
   const [loading, setLoading] = useState(true);
- const userData=useSelector((state:any)=> state.user)
+
+  const userData = useSelector((state: { user: UserState }) => state.user);
+  const router = useRouter();
+
   // Fetch Dashboard API
   useEffect(() => {
     const loadDashboard = async () => {
@@ -65,18 +79,18 @@ const DashboardPage = () => {
         );
         setData(res.data.dashboard);
       } catch (error) {
-        console.log("Dashboard Error:", error);
+        console.error("Dashboard Error:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    loadDashboard();
+    if (userData?.id) loadDashboard();
   }, [userData.id]);
 
   return (
     <div className="min-h-[90svh] relative bg-black text-white">
-      {/* Beautiful Background Light Effects */}
+      {/* Background Light Effects */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-red-500/10 blur-[120px] rounded-full"></div>
       <div className="absolute bottom-0 right-0 w-[800px] h-[600px] bg-blue-600/10 blur-[120px] rounded-full"></div>
 
@@ -118,7 +132,7 @@ const DashboardPage = () => {
                   iconColor="text-orange-500"
                 />
 
-                <QuickActionsCard />
+                <QuickActionsCard router={router} />
               </div>
 
               {/* ------------------------------ CHART + TABLE ------------------------------ */}
@@ -157,7 +171,13 @@ const DashboardPage = () => {
                   </CardHeader>
 
                   <CardContent>
-                    <TransactionTable data={data.recentActivity} />
+                    {data.recentActivity.length === 0 ? (
+                      <div className="text-zinc-500 text-center py-10">
+                        No recent activity.
+                      </div>
+                    ) : (
+                      <TransactionTable data={data.recentActivity} />
+                    )}
                   </CardContent>
                 </Card>
               </div>
@@ -171,21 +191,21 @@ const DashboardPage = () => {
 
 export default DashboardPage;
 
-// ----------------------------------------------------------------------------
-// METRIC CARD COMPONENT
-// ----------------------------------------------------------------------------
-const DashboardMetric = ({
+// --------------------------- METRIC CARD ---------------------------
+interface DashboardMetricProps {
+  title: string;
+  value: string;
+  change: string;
+  icon: React.ElementType;
+  iconColor: string;
+}
+
+const DashboardMetric: React.FC<DashboardMetricProps> = ({
   title,
   value,
   change,
   icon: Icon,
   iconColor,
-}: {
-  title: string;
-  value: string;
-  change: string;
-  icon: any;
-  iconColor: string;
 }) => (
   <motion.div whileHover={{ y: -4, scale: 1.02 }}>
     <Card className="bg-zinc-900 border-yellow-500/60 hover:border-yellow-400 transition">
@@ -204,10 +224,12 @@ const DashboardMetric = ({
   </motion.div>
 );
 
-// ----------------------------------------------------------------------------
-// QUICK ACTIONS CARD
-// ----------------------------------------------------------------------------
-const QuickActionsCard = () => (
+// --------------------------- QUICK ACTIONS CARD ---------------------------
+interface QuickActionsCardProps {
+  router: ReturnType<typeof useRouter>;
+}
+
+const QuickActionsCard: React.FC<QuickActionsCardProps> = ({ router }) => (
   <Card className="bg-zinc-900 border-yellow-500/60">
     <CardHeader>
       <CardTitle className="text-lg text-white">Quick Actions</CardTitle>
@@ -217,37 +239,34 @@ const QuickActionsCard = () => (
     </CardHeader>
 
     <CardContent className="flex flex-col space-y-3">
-      <Button className="w-full bg-zinc-800 hover:bg-zinc-700 text-white justify-start">
+      <Button
+        
+        className="w-full bg-zinc-800 hover:bg-zinc-700 text-white justify-start"
+      >
         <ArrowUpRight className="w-4 h-4 mr-2 text-green-400" />
-        Withdraw Funds
+        <Link href="/user/trade">Withdraw Funds</Link> 
       </Button>
 
       <Button className="w-full bg-zinc-800 hover:bg-zinc-700 text-white justify-start">
         <ArrowDownLeft className="w-4 h-4 mr-2 text-red-400" />
-        Execute New Trade
+         <Link href="/user/trade">Execute New Trade</Link>  
       </Button>
-
-      <Button className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold justify-start">
+   <Link href="/user/trade">
+      <Button  className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold justify-start">
         <DollarSign className="w-4 h-4 mr-2" />
-        Fund Account
+       Fund Account 
       </Button>
+      </Link>  
     </CardContent>
   </Card>
 );
 
-// ----------------------------------------------------------------------------
-// TRANSACTION TABLE COMPONENT
-// ----------------------------------------------------------------------------
-const TransactionTable = ({
-  data,
-}: {
-  data: {
-    id: string;
-    amount: number;
-    offer: { type: string; crypto: { symbol: string } };
-    createdAt: string;
-  }[];
-}) => (
+// --------------------------- TRANSACTION TABLE ---------------------------
+interface TransactionTableProps {
+  data: RecentActivity[];
+}
+
+const TransactionTable: React.FC<TransactionTableProps> = ({ data }) => (
   <div className="overflow-auto max-h-80">
     <Table className="text-zinc-300">
       <TableHeader className="sticky top-0 bg-zinc-800">
@@ -264,7 +283,7 @@ const TransactionTable = ({
             key={tx.id}
             className="border-zinc-800 hover:bg-zinc-900/50"
           >
-            <TableCell>{tx.id.slice(0, 6)}...</TableCell>
+            <TableCell>{tx.id.slice(-6)}</TableCell>
 
             <TableCell>
               <Badge

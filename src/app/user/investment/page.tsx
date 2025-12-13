@@ -78,7 +78,38 @@ const Badge = ({ children, className }: { children: React.ReactNode; className?:
   </span>
 );
 
+const RateRow = ({ label, value, highlight = false }: { label: string; value: string; highlight?: boolean }) => (
+  <div className="flex justify-between items-center">
+    <span className={`text-sm ${highlight ? 'text-white font-semibold' : 'text-slate-400'}`}>{label}</span>
+    <span className={`font-mono ${highlight ? 'text-xl text-emerald-400 font-bold' : 'text-slate-200 font-medium'}`}>
+      {value}
+    </span>
+  </div>
+);
+
+const ContractFeature = ({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) => (
+  <div className="flex items-start gap-4 p-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition-colors">
+    <div className="p-2 bg-slate-950 rounded-lg text-indigo-400 border border-slate-800">
+      {icon}
+    </div>
+    <div>
+      <h4 className="text-white font-semibold text-sm">{title}</h4>
+      <p className="text-slate-400 text-xs mt-1 leading-relaxed">{desc}</p>
+    </div>
+  </div>
+);
+
 const PlanCard = ({ plan }: { plan: Plan }) => {
+  // Function to open Tidio chat and pass plan info
+  const openTidioChat = () => {
+    if (window.tidioChatApi) {
+      window.tidioChatApi.open();
+      window.tidioChatApi.setVisitorData({ message: `I am interested in the ${plan.name} plan.` });
+    } else {
+      console.warn("Tidio chat API not loaded yet.");
+    }
+  };
+
   return (
     <div className={`relative group flex flex-col h-full bg-slate-900/50 backdrop-blur-md border ${plan.borderColor} rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-${plan.color.split('-')[1]}-500/20 transition-all duration-300 transform hover:-translate-y-1`}>
       {/* Decorative Glow */}
@@ -112,34 +143,16 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
 
       {/* Footer / Action */}
       <div className="p-6 pt-0 mt-auto">
-        <button className={`w-full py-3 rounded-xl font-semibold bg  text-white border border-white/10 hover:border-white/20 transition-all flex items-center justify-center gap-2 group-hover:bg-gradient-to-r group-hover:from-slate-800 group-hover:to-slate-700`}>
+        <button
+          onClick={openTidioChat}
+          className={`w-full py-3 rounded-xl font-semibold bg text-white border border-white/10 hover:border-white/20 transition-all flex items-center justify-center gap-2 group-hover:bg-gradient-to-r group-hover:from-slate-800 group-hover:to-slate-700`}
+        >
           Choose {plan.name} <ChevronRight className="w-4 h-4" />
         </button>
       </div>
     </div>
   );
 };
-
-const RateRow = ({ label, value, highlight = false }: { label: string; value: string; highlight?: boolean }) => (
-  <div className="flex justify-between items-center">
-    <span className={`text-sm ${highlight ? 'text-white font-semibold' : 'text-slate-400'}`}>{label}</span>
-    <span className={`font-mono ${highlight ? 'text-xl text-emerald-400 font-bold' : 'text-slate-200 font-medium'}`}>
-      {value}
-    </span>
-  </div>
-);
-
-const ContractFeature = ({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) => (
-  <div className="flex items-start gap-4 p-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition-colors">
-    <div className="p-2 bg-slate-950 rounded-lg text-indigo-400 border border-slate-800">
-      {icon}
-    </div>
-    <div>
-      <h4 className="text-white font-semibold text-sm">{title}</h4>
-      <p className="text-slate-400 text-xs mt-1 leading-relaxed">{desc}</p>
-    </div>
-  </div>
-);
 
 // --- Main Page Layout ---
 
@@ -209,7 +222,7 @@ export default function InvestmentPlansPage() {
 
         {/* Footer */}
         <footer className="mt-20 text-center text-slate-600 text-sm">
-          <p>© 2025 BRICSBTC Investment Group. All rights reserved.</p>
+          <p>© 2019 BRICSBTC Investment Group. All rights reserved.</p>
         </footer>
 
       </div>
