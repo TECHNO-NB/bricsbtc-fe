@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 
 const Page = () => {
   const [stats, setStats] = useState<any>(null);
@@ -10,6 +11,7 @@ const Page = () => {
   const [pendingKyc, setPendingKyc] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const router=useRouter();
+  const userData=useSelector((state:any)=> state.user)
 
   const getStatusColor = (status: string) => {
     switch (status.toUpperCase()) {
@@ -31,7 +33,7 @@ const Page = () => {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/v1/admin/dashboard/fcbd0bde-e90c-4444-887e-dc07afa13449"); 
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/admin/dashboard/${userData.id}`); 
         const data = res.data.data;
 
         setStats(data.stats);
@@ -45,7 +47,7 @@ const Page = () => {
     };
 
     fetchDashboard();
-  }, []);
+  }, [userData.id]);
 
   if (loading) return <p style={{ color: "#fff" }}>Loading...</p>;
 
