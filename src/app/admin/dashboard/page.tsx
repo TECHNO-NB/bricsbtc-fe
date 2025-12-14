@@ -67,12 +67,12 @@ const Page = () => {
         }}
       >
         {[
-          { label: "Total Users", value: stats.totalUsers, color: "#00d395" },
-          { label: "Active Offers", value: stats.totalActiveOffers, color: "#f7931a" },
-          { label: "Pending Trades", value: stats.totalPendingTrades, color: "#627eea" },
-          { label: "Cryptocurrencies", value: stats.totalCryptoCurrencies, color: "#9945ff" },
-          { label: "Networks", value: stats.totalNetworks, color: "#00d395" },
-          { label: "Unread Messages", value: stats.unreadMessages, color: "#ff4d4d" },
+          { label: "Total Users", value: stats?.totalUsers, color: "#00d395" },
+          { label: "Active Offers", value: stats?.totalActiveOffers, color: "#f7931a" },
+          { label: "Pending Trades", value: stats?.totalPendingTrades, color: "#627eea" },
+          { label: "Cryptocurrencies", value: stats?.totalCryptoCurrencies, color: "#9945ff" },
+          { label: "Networks", value: stats?.totalNetworks, color: "#00d395" },
+          { label: "Unread Messages", value: stats?.unreadMessages, color: "#ff4d4d" },
         ].map((stat, index) => (
           <div
             key={index}
@@ -90,7 +90,7 @@ const Page = () => {
                 fontSize: "0.875rem",
               }}
             >
-              {stat.label}
+              {stat?.label}
             </p>
             <p
               style={{
@@ -100,7 +100,7 @@ const Page = () => {
                 color: stat.color,
               }}
             >
-              {stat.value}
+              {stat?.value || 0}
             </p>
           </div>
         ))}
