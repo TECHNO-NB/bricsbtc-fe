@@ -20,6 +20,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import {
   Card,
   CardContent,
   CardDescription,
@@ -39,6 +47,40 @@ type FormDataT = {
 
 export default function RegisterPage() {
   const totalSteps = 3;
+
+  const COUNTRIES = [
+    { code: "US", name: "United States" },
+    { code: "CA", name: "Canada" },
+    { code: "AU", name: "Australia" },
+    { code: "GB", name: "United Kingdom" },
+    { code: "IN", name: "India" },
+    { code: "CN", name: "China" },
+    { code: "JP", name: "Japan" },
+    { code: "KR", name: "South Korea" },
+    { code: "DE", name: "Germany" },
+    { code: "FR", name: "France" },
+    { code: "IT", name: "Italy" },
+    { code: "ES", name: "Spain" },
+    { code: "NL", name: "Netherlands" },
+    { code: "SE", name: "Sweden" },
+    { code: "NO", name: "Norway" },
+    { code: "CH", name: "Switzerland" },
+    { code: "BR", name: "Brazil" },
+    { code: "MX", name: "Mexico" },
+    { code: "AR", name: "Argentina" },
+    { code: "ZA", name: "South Africa" },
+    { code: "AE", name: "United Arab Emirates" },
+    { code: "SA", name: "Saudi Arabia" },
+    { code: "SG", name: "Singapore" },
+    { code: "MY", name: "Malaysia" },
+    { code: "TH", name: "Thailand" },
+    { code: "PH", name: "Philippines" },
+    { code: "ID", name: "Indonesia" },
+    { code: "NP", name: "Nepal" },
+    { code: "PK", name: "Pakistan" },
+    { code: "BD", name: "Bangladesh" },
+    { code: "LK", name: "Sri Lanka" },
+  ];
 
   // top-level state
   const [step, setStep] = useState<number>(1);
@@ -66,7 +108,9 @@ export default function RegisterPage() {
 
   // Generate preview URLs for uploadedFiles
   const previewUrls = useMemo(() => {
-    return uploadedFiles.map((file) => (file ? URL.createObjectURL(file) : null));
+    return uploadedFiles.map((file) =>
+      file ? URL.createObjectURL(file) : null
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uploadedFiles.map((f) => (f ? f.name + f.size : "null")).join("|")]);
 
@@ -147,7 +191,7 @@ export default function RegisterPage() {
     setIsLoading(true);
     try {
       const fd = new FormData();
-    
+
       fd.append("email", formData.email);
       fd.append("password", formData.password);
       fd.append("fullName", formData.fullName);
@@ -163,10 +207,13 @@ export default function RegisterPage() {
       });
 
       // change this backend url if needed
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/register`, {
-        method: "POST",
-        body: fd,
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/register`,
+        {
+          method: "POST",
+          body: fd,
+        }
+      );
 
       const json = await res.json();
       if (!res.ok) {
@@ -227,14 +274,20 @@ export default function RegisterPage() {
 
           <CardHeader className="text-center space-y-2 pb-6">
             <CardTitle className="text-2xl font-bold tracking-tight text-white flex items-center justify-center gap-2">
-              {!isSuccess && <ShieldCheck className="w-6 h-6 text-yellow-500" />}
+              {!isSuccess && (
+                <ShieldCheck className="w-6 h-6 text-yellow-500" />
+              )}
               {isSuccess ? "Welcome Aboard" : "Create Account"}
             </CardTitle>
             <CardDescription className="text-zinc-400">
               {isSuccess
                 ? "Your application is under review."
                 : `Step ${step} of ${totalSteps} • ${
-                    step === 1 ? "Credentials" : step === 2 ? "Personal Details" : "Identity Verification"
+                    step === 1
+                      ? "Credentials"
+                      : step === 2
+                      ? "Personal Details"
+                      : "Identity Verification"
                   }`}
             </CardDescription>
           </CardHeader>
@@ -262,7 +315,17 @@ export default function RegisterPage() {
                         <Label className="text-zinc-300">Email Address</Label>
                         <div className="relative group">
                           <Mail className="absolute left-3 top-2.5 h-5 w-5 text-zinc-500 group-focus-within:text-yellow-500 transition-colors" />
-                          <Input placeholder="you@example.com" className="pl-10 bg-zinc-900/50 border-zinc-800 text-white focus-visible:ring-yellow-500/50" value={formData.email} onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))} />
+                          <Input
+                            placeholder="you@example.com"
+                            className="pl-10 bg-zinc-900/50 border-zinc-800 text-white focus-visible:ring-yellow-500/50"
+                            value={formData.email}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                email: e.target.value,
+                              }))
+                            }
+                          />
                         </div>
                       </div>
 
@@ -270,15 +333,32 @@ export default function RegisterPage() {
                         <Label className="text-zinc-300">Password</Label>
                         <div className="relative group">
                           <Lock className="absolute left-3 top-2.5 h-5 w-5 text-zinc-500 group-focus-within:text-yellow-500 transition-colors" />
-                          <Input type="password" placeholder="••••••••" className="pl-10 bg-zinc-900/50 border-zinc-800 text-white focus-visible:ring-yellow-500/50" value={formData.password} onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))} />
+                          <Input
+                            type="password"
+                            placeholder="••••••••"
+                            className="pl-10 bg-zinc-900/50 border-zinc-800 text-white focus-visible:ring-yellow-500/50"
+                            value={formData.password}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                password: e.target.value,
+                              }))
+                            }
+                          />
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <Label className="text-zinc-300">Confirm Password</Label>
+                        <Label className="text-zinc-300">
+                          Confirm Password
+                        </Label>
                         <div className="relative group">
                           <Lock className="absolute left-3 top-2.5 h-5 w-5 text-zinc-500 group-focus-within:text-yellow-500 transition-colors" />
-                          <Input type="password" placeholder="••••••••" className="pl-10 bg-zinc-900/50 border-zinc-800 text-white focus-visible:ring-yellow-500/50" />
+                          <Input
+                            type="password"
+                            placeholder="••••••••"
+                            className="pl-10 bg-zinc-900/50 border-zinc-800 text-white focus-visible:ring-yellow-500/50"
+                          />
                         </div>
                       </div>
                     </div>
@@ -291,24 +371,49 @@ export default function RegisterPage() {
 
                       <label className="border-2 border-dashed border-zinc-800 hover:border-yellow-500/50 bg-zinc-900/30 rounded-xl p-6 transition-colors text-center cursor-pointer group flex flex-col items-center">
                         {avatarPreview ? (
-                          <img src={avatarPreview} alt="Avatar preview" className="w-24 h-24 rounded-full object-cover mb-2 border border-zinc-700" />
+                          <img
+                            src={avatarPreview}
+                            alt="Avatar preview"
+                            className="w-24 h-24 rounded-full object-cover mb-2 border border-zinc-700"
+                          />
                         ) : (
                           <div className="w-12 h-12 bg-zinc-900 rounded-full flex items-center justify-center mb-3 group-hover:bg-yellow-500/20 transition-colors">
                             <UploadCloud className="w-6 h-6 text-zinc-500 group-hover:text-yellow-500" />
                           </div>
                         )}
 
-                        <h3 className="text-sm font-medium text-zinc-300 mb-1">Click to upload or drag & drop</h3>
-                        <p className="text-xs text-zinc-500">PNG, JPG (max 10MB)</p>
+                        <h3 className="text-sm font-medium text-zinc-300 mb-1">
+                          Click to upload or drag & drop
+                        </h3>
+                        <p className="text-xs text-zinc-500">
+                          PNG, JPG (max 10MB)
+                        </p>
 
-                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleAvatarSelect(e.target.files?.[0] || null)} />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) =>
+                            handleAvatarSelect(e.target.files?.[0] || null)
+                          }
+                        />
                       </label>
 
                       <div className="space-y-2">
                         <Label className="text-zinc-300">Full Legal Name</Label>
                         <div className="relative group">
                           <User className="absolute left-3 top-2.5 h-5 w-5 text-zinc-500 group-focus-within:text-yellow-500 transition-colors" />
-                          <Input placeholder="John Doe" className="pl-10 bg-zinc-900/50 border-zinc-800 text-white focus-visible:ring-yellow-500/50" value={formData.fullName} onChange={(e) => setFormData((prev) => ({ ...prev, fullName: e.target.value }))} />
+                          <Input
+                            placeholder="John Doe"
+                            className="pl-10 bg-zinc-900/50 border-zinc-800 text-white focus-visible:ring-yellow-500/50"
+                            value={formData.fullName}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                fullName: e.target.value,
+                              }))
+                            }
+                          />
                         </div>
                       </div>
 
@@ -316,29 +421,61 @@ export default function RegisterPage() {
                         <Label className="text-zinc-300">Address</Label>
                         <div className="relative group">
                           <Pin className="absolute left-3 top-2.5 h-5 w-5 text-zinc-500 group-focus-within:text-yellow-500 transition-colors" />
-                          <Input placeholder="Address" className="pl-10 bg-zinc-900/50 border-zinc-800 text-white focus-visible:ring-yellow-500/50" value={formData.address} onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))} />
+                          <Input
+                            placeholder="Address"
+                            className="pl-10 bg-zinc-900/50 border-zinc-800 text-white focus-visible:ring-yellow-500/50"
+                            value={formData.address}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                address: e.target.value,
+                              }))
+                            }
+                          />
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <Label className="text-zinc-300">Country of Residence</Label>
-                        <div className="relative group">
-                          <MapPin className="absolute left-3 top-2.5 h-5 w-5 text-zinc-500 group-focus-within:text-yellow-500 transition-colors" />
-                          <select className="w-full h-10 px-3 pl-10 rounded-md border border-zinc-800 bg-zinc-900/50 text-sm text-white focus:outline-none focus:ring-2 focus:ring-yellow-500/50" value={formData.country} onChange={(e) => setFormData((prev) => ({ ...prev, country: e.target.value }))}>
-                            <option value="">Select Country</option>
-                            <option value="br">Brazil</option>
-                            <option value="ru">Russia</option>
-                            <option value="in">India</option>
-                            <option value="cn">China</option>
-                            <option value="za">South Africa</option>
-                            <option value="ae">UAE</option>
-                            <option value="other">Other</option>
-                          </select>
+                        <Label className="text-zinc-300">
+                          Country of Residence
+                        </Label>
+
+                        <div className="relative">
+                          <MapPin className="absolute left-3 top-2.5 h-5 w-5 text-zinc-500 z-10" />
+
+                          <Select
+                            value={formData.country}
+                            onValueChange={(value) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                country: value,
+                              }))
+                            }
+                          >
+                            <SelectTrigger className="pl-10 bg-zinc-900/50 border-zinc-800 text-white focus:ring-yellow-500/50">
+                              <SelectValue placeholder="Select Country" />
+                            </SelectTrigger>
+
+                            <SelectContent className="bg-zinc-950 border-zinc-800 text-white max-h-72">
+                              {COUNTRIES.map((country) => (
+                                <SelectItem
+                                  key={country.code}
+                                  value={country.name}
+                                  className="cursor-pointer focus:bg-yellow-500/20"
+                                >
+                                  {country.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
 
                       <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                        <p className="text-xs text-yellow-500/80">⚠️ Ensure your name matches your government ID exactly to avoid KYC delays.</p>
+                        <p className="text-xs text-yellow-500/80">
+                          ⚠️ Ensure your name matches your government ID exactly
+                          to avoid KYC delays.
+                        </p>
                       </div>
                     </div>
                   )}
@@ -346,9 +483,14 @@ export default function RegisterPage() {
                   {/* STEP 3 */}
                   {step === 3 && (
                     <div className="space-y-4">
-                      <h2 className="text-xl font-semibold text-zinc-100 mb-4">Document Upload</h2>
+                      <h2 className="text-xl font-semibold text-zinc-100 mb-4">
+                        Document Upload
+                      </h2>
 
-                      <p className="text-zinc-400 mb-6">Please upload your Government ID or Passport (Max 2 documents).</p>
+                      <p className="text-zinc-400 mb-6">
+                        Please upload your Government ID or Passport (Max 2
+                        documents).
+                      </p>
 
                       <div className="flex gap-6">
                         {uploadedFiles.map((file, index) => {
@@ -356,25 +498,60 @@ export default function RegisterPage() {
 
                           return (
                             <div key={index} className="flex-1 relative">
-                              <label className="text-zinc-300 block mb-2">Document {index + 1}</label>
+                              <label className="text-zinc-300 block mb-2">
+                                Document {index + 1}
+                              </label>
 
-                              <label htmlFor={`file-upload-${index}`} className={`border-2 border-dashed rounded-xl p-6 transition-colors text-center cursor-pointer group flex flex-col items-center justify-center min-h-[200px] ${file ? "border-green-500/50 bg-green-900/10" : "border-zinc-800 hover:border-yellow-500/50 bg-zinc-900/30"}`}>
+                              <label
+                                htmlFor={`file-upload-${index}`}
+                                className={`border-2 border-dashed rounded-xl p-6 transition-colors text-center cursor-pointer group flex flex-col items-center justify-center min-h-[200px] ${
+                                  file
+                                    ? "border-green-500/50 bg-green-900/10"
+                                    : "border-zinc-800 hover:border-yellow-500/50 bg-zinc-900/30"
+                                }`}
+                              >
                                 {file && previewSrc ? (
-                                  <img src={previewSrc} alt={`Document preview ${index + 1}`} className="w-32 h-32 rounded-lg object-cover mb-3 border border-zinc-700 shadow-md" />
+                                  <img
+                                    src={previewSrc}
+                                    alt={`Document preview ${index + 1}`}
+                                    className="w-32 h-32 rounded-lg object-cover mb-3 border border-zinc-700 shadow-md"
+                                  />
                                 ) : (
                                   <div className="w-12 h-12 bg-zinc-900 rounded-full flex items-center justify-center mb-3 group-hover:bg-yellow-500/20 transition-colors">
                                     <UploadCloud className="w-6 h-6 text-zinc-500 group-hover:text-yellow-500" />
                                   </div>
                                 )}
 
-                                <h3 className="text-sm font-medium text-zinc-300 mb-1">{file ? file.name : "Click to upload or drag & drop"}</h3>
-                                <p className="text-xs text-zinc-500">PNG, JPG (max 10MB)</p>
+                                <h3 className="text-sm font-medium text-zinc-300 mb-1">
+                                  {file
+                                    ? file.name
+                                    : "Click to upload or drag & drop"}
+                                </h3>
+                                <p className="text-xs text-zinc-500">
+                                  PNG, JPG (max 10MB)
+                                </p>
 
-                                <input id={`file-upload-${index}`} type="file" accept="image/png, image/jpeg" className="hidden" onChange={(e) => { const selectedFile = e.target.files?.[0]; if (selectedFile) handleKycFileSelect(index, selectedFile); if (e.target) e.target.value = ""; }} disabled={!!file} />
+                                <input
+                                  id={`file-upload-${index}`}
+                                  type="file"
+                                  accept="image/png, image/jpeg"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    const selectedFile = e.target.files?.[0];
+                                    if (selectedFile)
+                                      handleKycFileSelect(index, selectedFile);
+                                    if (e.target) e.target.value = "";
+                                  }}
+                                  disabled={!!file}
+                                />
                               </label>
 
                               {file && (
-                                <button type="button" onClick={() => handleKycFileRemove(index)} className="absolute top-0 right-0 p-1 bg-red-600 rounded-full text-white hover:bg-red-700 transition-colors transform translate-x-1/2 -translate-y-1/2 z-10">
+                                <button
+                                  type="button"
+                                  onClick={() => handleKycFileRemove(index)}
+                                  className="absolute top-0 right-0 p-1 bg-red-600 rounded-full text-white hover:bg-red-700 transition-colors transform translate-x-1/2 -translate-y-1/2 z-10"
+                                >
                                   <X className="w-4 h-4" />
                                 </button>
                               )}
@@ -384,11 +561,15 @@ export default function RegisterPage() {
                       </div>
 
                       <div className="mt-8 pt-4 border-t border-zinc-800">
-                        <h3 className="text-md font-medium text-zinc-300 mb-2">Current Uploads</h3>
+                        <h3 className="text-md font-medium text-zinc-300 mb-2">
+                          Current Uploads
+                        </h3>
 
                         <ul className="text-sm text-zinc-400">
                           {uploadedFiles.map((f, i) => (
-                            <li key={i}>Slot {i + 1}: {f ? f.name : "No file selected"}</li>
+                            <li key={i}>
+                              Slot {i + 1}: {f ? f.name : "No file selected"}
+                            </li>
                           ))}
                         </ul>
                       </div>
@@ -397,14 +578,32 @@ export default function RegisterPage() {
                       <div className="space-y-2 pt-2">
                         <Label className="text-zinc-300">Document Type</Label>
                         <div className="grid grid-cols-2 gap-2">
-                          <div onClick={() => setDocumentsType("passport")} className={`flex items-center space-x-2 border rounded-lg p-3 bg-zinc-900/50 cursor-pointer ${documentsType === "passport" ? "border-yellow-500" : "border-zinc-800"} hover:border-yellow-500/50 transition-colors`}>
+                          <div
+                            onClick={() => setDocumentsType("passport")}
+                            className={`flex items-center space-x-2 border rounded-lg p-3 bg-zinc-900/50 cursor-pointer ${
+                              documentsType === "passport"
+                                ? "border-yellow-500"
+                                : "border-zinc-800"
+                            } hover:border-yellow-500/50 transition-colors`}
+                          >
                             <FileText className="w-4 h-4 text-zinc-400" />
-                            <span className="text-xs text-zinc-300">Passport</span>
+                            <span className="text-xs text-zinc-300">
+                              Passport
+                            </span>
                           </div>
 
-                          <div onClick={() => setDocumentsType("nationalId")} className={`flex items-center space-x-2 border rounded-lg p-3 bg-zinc-900/50 cursor-pointer ${documentsType === "nationalId" ? "border-yellow-500" : "border-zinc-800"} hover:border-yellow-500/50 transition-colors`}>
+                          <div
+                            onClick={() => setDocumentsType("nationalId")}
+                            className={`flex items-center space-x-2 border rounded-lg p-3 bg-zinc-900/50 cursor-pointer ${
+                              documentsType === "nationalId"
+                                ? "border-yellow-500"
+                                : "border-zinc-800"
+                            } hover:border-yellow-500/50 transition-colors`}
+                          >
                             <FileText className="w-4 h-4 text-zinc-400" />
-                            <span className="text-xs text-zinc-300">National ID</span>
+                            <span className="text-xs text-zinc-300">
+                              National ID
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -418,16 +617,36 @@ export default function RegisterPage() {
           <CardFooter className="flex justify-between pt-2">
             {!isSuccess && (
               <>
-                <Button variant="ghost" onClick={handleBack} disabled={step === 1 || isLoading} className="text-zinc-400 hover:text-white hover:bg-zinc-900">
+                <Button
+                  variant="ghost"
+                  onClick={handleBack}
+                  disabled={step === 1 || isLoading}
+                  className="text-zinc-400 hover:text-white hover:bg-zinc-900"
+                >
                   <ArrowLeft className="w-4 h-4 mr-2" /> Back
                 </Button>
 
                 {step === totalSteps ? (
-                  <Button onClick={(e) => handleSubmit(e)} disabled={isLoading} className="bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-black font-semibold shadow-lg shadow-yellow-500/20 w-32">
-                    {isLoading ? <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-5 h-5 border-2 border-black border-t-transparent rounded-full" /> : "Verify & Join"}
+                  <Button
+                    onClick={(e) => handleSubmit(e)}
+                    disabled={isLoading}
+                    className="bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-black font-semibold shadow-lg shadow-yellow-500/20 w-32"
+                  >
+                    {isLoading ? (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ repeat: Infinity, duration: 1 }}
+                        className="w-5 h-5 border-2 border-black border-t-transparent rounded-full"
+                      />
+                    ) : (
+                      "Verify & Join"
+                    )}
                   </Button>
                 ) : (
-                  <Button onClick={handleNext} className="bg-zinc-100 text-black hover:bg-zinc-300 w-32">
+                  <Button
+                    onClick={handleNext}
+                    className="bg-zinc-100 text-black hover:bg-zinc-300 w-32"
+                  >
                     Next Step <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 )}
@@ -435,13 +654,20 @@ export default function RegisterPage() {
             )}
 
             {isSuccess && (
-              <Button className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold">Go to Dashboard</Button>
+              <Button className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold">
+                Go to Dashboard
+              </Button>
             )}
           </CardFooter>
         </Card>
 
         {!isSuccess && (
-          <p className="text-center text-zinc-500 text-sm mt-6">Already have an account? <span className="text-yellow-500 font-medium cursor-pointer hover:underline">Log in here</span></p>
+          <p className="text-center text-zinc-500 text-sm mt-6">
+            Already have an account?{" "}
+            <span className="text-yellow-500 font-medium cursor-pointer hover:underline">
+              Log in here
+            </span>
+          </p>
         )}
       </motion.div>
     </div>
@@ -451,12 +677,21 @@ export default function RegisterPage() {
 // Sub-component for Success View
 function SuccessView() {
   return (
-    <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center h-full text-center py-8">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="flex flex-col items-center justify-center h-full text-center py-8"
+    >
       <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mb-6">
         <CheckCircle2 className="w-10 h-10 text-green-500" />
       </div>
-      <h3 className="text-xl font-semibold text-white mb-2">Registration Complete!</h3>
-      <p className="text-zinc-400 text-sm max-w-xs">We have received your KYC documents. You will receive an email verification shortly.</p>
+      <h3 className="text-xl font-semibold text-white mb-2">
+        Registration Complete!
+      </h3>
+      <p className="text-zinc-400 text-sm max-w-xs">
+        We have received your KYC documents. You will receive an email
+        verification shortly.
+      </p>
     </motion.div>
   );
 }
