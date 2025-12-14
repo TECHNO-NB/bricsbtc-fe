@@ -19,6 +19,7 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Sidebar = ({ children }: any) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -74,6 +75,22 @@ const Sidebar = ({ children }: any) => {
     }
   }, [pathname, kycStatus]);
 
+
+  
+    const handleLogout = async () => {
+      axios.defaults.withCredentials = true;
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/logout`
+      );
+  
+      if (res.data) {
+        router.push("/");
+        toast.success("logout success");
+      } else {
+        toast.error("logout fail");
+      }
+    };
+
   const SidebarContent = () => (
     <div className="flex flex-col h-full justify-between p-6">
       <div>
@@ -121,7 +138,7 @@ const Sidebar = ({ children }: any) => {
         className="pt-4 border-t border-yellow-500/60"
         whileHover={{ scale: 1.02, backgroundColor: "#27272a" }}
       >
-        <button className="flex items-center justify-between w-full p-2 text-zinc-400 hover:text-white rounded-lg group">
+        <button onClick={handleLogout} className="flex items-center justify-between w-full p-2 text-zinc-400 hover:text-white rounded-lg group">
           <div className="flex items-center min-w-0">
             <span className="text-sm mr-2 font-medium truncate">
               <LogOut />

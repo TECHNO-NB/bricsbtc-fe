@@ -15,8 +15,12 @@ import {
   FileCheck,
   Menu,
   X,
+  LogOut,
 } from "lucide-react";
 import { Input } from "../ui/input";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const menuItems = [
   { id: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -35,6 +39,20 @@ export default function Sidebar() {
   const [activePage, setActivePage] = useState("/admin/dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const router = useRouter();
+  const handleLogout = async () => {
+    axios.defaults.withCredentials = true;
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/logout`
+    );
+
+    if (res.data) {
+      router.push("/");
+      toast.success("logout success");
+    } else {
+      toast.error("logout fail");
+    }
+  };
   return (
     <>
       {/* HEADER */}
@@ -52,8 +70,9 @@ export default function Sidebar() {
         />
 
         <div className="flex items-center gap-4">
-        
-          <div className="w-8 h-8 bg-zinc-700 rounded-full" />
+          <div onClick={handleLogout} className="w-8 h-8 bg-zinc-700 flex items-center justify-center rounded-full cursor-pointer">
+            <LogOut size={20} />
+          </div>
         </div>
       </header>
 
@@ -100,8 +119,8 @@ export default function Sidebar() {
               A
             </div>
             <div>
-              <p className="text-sm font-medium text-white">Admin User</p>
-              <p className="text-xs text-gray-400">admin@crypto.com</p>
+              <p className="text-sm font-medium text-white">Admin</p>
+              <p className="text-xs text-gray-400">admin</p>
             </div>
           </div>
         </div>
