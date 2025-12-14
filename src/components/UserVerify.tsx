@@ -23,11 +23,7 @@ export default function VerifyUser() {
       setIsLoading(true);
       axios.defaults.withCredentials = true;
 
-      /**
-       * ======================================
-       * CASE 1: USER ALREADY IN REDUX
-       * ======================================
-       */
+      // CASE 1: USER ALREADY IN REDUX
       if (userData?.id) {
         // Logged-in users should not stay on public pages
         if (PUBLIC_ROUTES.includes(path)) {
@@ -40,7 +36,7 @@ export default function VerifyUser() {
           return;
         }
 
-        // ❌ USER cannot access admin routes
+        // Check unauthorized access
         if (path.startsWith("/admin") && userData.role !== "admin") {
           toast.error("Unauthorized Access!");
           router.push("/user/dashboard");
@@ -48,16 +44,18 @@ export default function VerifyUser() {
           return;
         }
 
-        // ✅ ADMIN can access /user/*
+        if (path.startsWith("/user") && userData.role !== "user") {
+          toast.error("Unauthorized Access!");
+          router.push("/admin/dashboard");
+          setIsLoading(false);
+          return;
+        }
+
         setIsLoading(false);
         return;
       }
 
-      /**
-       * ======================================
-       * CASE 2: USER NOT IN REDUX
-       * ======================================
-       */
+      // CASE 2: USER NOT IN REDUX
       try {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/verify`
@@ -80,11 +78,13 @@ export default function VerifyUser() {
             })
           );
 
-          router.push(
-            data.role === "admin"
-              ? "/admin/dashboard"
-              : "/user/dashboard"
-          );
+          // Redirect based on role
+          if (data.role === "admin") {
+            if (!path.startsWith("/admin")) router.push("/admin/dashboard");
+          } else if (data.role === "user") {
+            if (!path.startsWith("/user")) router.push("/user/dashboard");
+          }
+
           return;
         }
       } catch (error) {
