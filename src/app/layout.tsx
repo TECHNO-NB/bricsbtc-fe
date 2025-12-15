@@ -31,7 +31,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <WrapperLayout>{children}</WrapperLayout>
-
+        
         
         <Script src="//code.tidio.co/yuci5joj6i4r2kfcb9gpencngirkdx8d.js" async></Script>
 

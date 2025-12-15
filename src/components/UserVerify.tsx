@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 
-const PUBLIC_ROUTES = ["/", "/auth/login", "/auth/register"];
+const PUBLIC_ROUTES = ["/", "/auth/login", "/auth/register","/learn","/term","/avoidscam","/privacy","/legal"];
 
 export default function VerifyUser() {
   const dispatch = useDispatch();

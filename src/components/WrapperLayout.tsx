@@ -10,6 +10,7 @@ import { Provider } from "react-redux";
 import VerifyUser from "./UserVerify";
 
 
+
 export const WrapperLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
@@ -18,6 +19,7 @@ export const WrapperLayout = ({ children }: { children: React.ReactNode }) => {
         {/* <Navbar/> */}
         <Toaster position="top-center" />
         {children}
+        
       </Provider>
     </div>
   );

@@ -246,7 +246,7 @@ const QuickActionsCard: React.FC<QuickActionsCardProps> = ({ router }) => (
       </CardDescription>
     </CardHeader>
 
-    <CardContent className="flex flex-col space-y-3">
+    <CardContent className="flex flex-col space-y-3 z-10">
       <Button
         onClick={() => router.push("/user/trade")}
         className="w-full bg-zinc-800 hover:bg-zinc-700 text-white justify-start"

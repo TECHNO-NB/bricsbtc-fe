@@ -25,6 +25,7 @@ import coin4 from "@/../public/coin4.png";
 import coverpic from "@/../public/landingcover.jpeg";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Footer from "@/components/Footer";
 
 type TickerItem = {
   pair: string;
@@ -281,19 +282,12 @@ export default function LandingPage() {
             </Button>
           </Link>
 
-          <div className="mt-12 pt-8 border-t border-white/10 w-full flex flex-col md:flex-row justify-between items-center text-slate-500 text-sm">
-            <p>© 2019 powered by Bricsbtc.</p>
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <a href="/privacy" className="hover:text-white">
-                Privacy
-              </a>
-              <a href="/term" className="hover:text-white">
-                Terms
-              </a>
-            </div>
+          <div className="mt-12 pt-8 border-t  border-white/10 w-full flex flex-col md:flex-row justify-between items-center text-slate-500 text-sm">
+           
           </div>
         </div>
       </footer>
+      <Footer/>
     </motion.div>
   );
 }

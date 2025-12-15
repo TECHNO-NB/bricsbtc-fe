@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronRight, ShieldAlert, FileText } from "lucide-react";
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export default function TermsPage() {
   return (
@@ -129,6 +130,7 @@ export default function TermsPage() {
           </section>
         </div>
       </main>
+      <Footer/>
     </div>
   );
 }

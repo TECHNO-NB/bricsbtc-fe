@@ -19,15 +19,17 @@ import {
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { addUser } from "@/redux/userSlice";
 
 const Sidebar = ({ children }: any) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-   const [unreadNotification, setUnreadNotification] = useState(0);
+  const [unreadNotification, setUnreadNotification] = useState(0);
   const userData: any = useSelector((state: any) => state.user);
+  const dispatch = useDispatch();
 
   // KYC statuses: PENDING, APPROVED, REJECTED
   const kycStatus = userData?.kycStatus;
@@ -41,6 +43,7 @@ const Sidebar = ({ children }: any) => {
     { name: "My Investment", icon: DollarSign, href: "/user/myinvestment" },
     { name: "Deposit", icon: BanknoteArrowUp, href: "/user/deposit" },
     { name: "Send Balance", icon: DollarSign, href: "/user/sendmoney" },
+
   ];
 
   // ------------------------------------------------
@@ -85,7 +88,22 @@ const Sidebar = ({ children }: any) => {
     );
 
     if (res.data) {
-      router.push("/");
+      dispatch(
+        addUser({
+          id: "",
+          fullName: "",
+          email: "",
+          role: "",
+          country: "",
+          address: "",
+          avatarUrl: "",
+          kyc: false,
+          balance: 0,
+          kycStatus: "",
+        })
+      );
+
+      router.push("/auth/login");
       toast.success("logout success");
     } else {
       toast.error("logout fail");
@@ -94,16 +112,16 @@ const Sidebar = ({ children }: any) => {
 
   useEffect(() => {
     const notificationCount = async () => {
-      const res=await axios.get(
+      const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/notification/count/${userData.id}`
       );
-      setUnreadNotification(res.data.unreadCount)
+      setUnreadNotification(res.data.unreadCount);
     };
-     notificationCount()
+    notificationCount();
   }, [userData]);
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full justify-between p-6">
+    <div className="flex flex-col h-full overflow-y-auto hide-scrollbar justify-between p-6">
       <div>
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center space-x-2">
@@ -166,7 +184,7 @@ const Sidebar = ({ children }: any) => {
   );
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-zinc-950 text-white">
+    <div className="min-h-screen overflow-y-auto bg-zinc-950 text-white">
       {/* MOBILE SIDEBAR */}
       <AnimatePresence>
         {isMobileOpen && (

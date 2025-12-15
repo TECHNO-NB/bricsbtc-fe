@@ -114,9 +114,7 @@ export default function LoginPage() {
                 <Label htmlFor="password" className="text-zinc-300">
                   Password
                 </Label>
-                <a className="text-xs text-yellow-500 hover:text-yellow-400 cursor-pointer">
-                  Forgot password?
-                </a>
+               
               </div>
 
               <div className="relative group">
@@ -173,7 +171,14 @@ export default function LoginPage() {
               Register
             </Link>
           </div>
+         
         </div>
+           <Link
+              href="/"
+              className="text-orange-500 flex justify-center  text-center w-full hover:underline"
+            >
+              back to Home
+            </Link>
       </motion.div>
     </div>
   );
