@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   MessageCircle,
+  BanknoteArrowUp,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -25,7 +26,7 @@ const Sidebar = ({ children }: any) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-
+   const [unreadNotification, setUnreadNotification] = useState(0);
   const userData: any = useSelector((state: any) => state.user);
 
   // KYC statuses: PENDING, APPROVED, REJECTED
@@ -37,6 +38,9 @@ const Sidebar = ({ children }: any) => {
     { name: "Trade", icon: TrendingUp, href: "/user/trade" },
     { name: "Transactions", icon: ListOrdered, href: "/user/transaction" },
     { name: "Investment", icon: DollarSign, href: "/user/investment" },
+    { name: "My Investment", icon: DollarSign, href: "/user/myinvestment" },
+    { name: "Deposit", icon: BanknoteArrowUp, href: "/user/deposit" },
+    { name: "Send Balance", icon: DollarSign, href: "/user/sendmoney" },
   ];
 
   // ------------------------------------------------
@@ -49,7 +53,6 @@ const Sidebar = ({ children }: any) => {
         )
       : navigation;
 
-  
   useEffect(() => {
     toast.dismiss();
 
@@ -75,21 +78,29 @@ const Sidebar = ({ children }: any) => {
     }
   }, [pathname, kycStatus]);
 
+  const handleLogout = async () => {
+    axios.defaults.withCredentials = true;
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/logout`
+    );
 
-  
-    const handleLogout = async () => {
-      axios.defaults.withCredentials = true;
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/logout`
+    if (res.data) {
+      router.push("/");
+      toast.success("logout success");
+    } else {
+      toast.error("logout fail");
+    }
+  };
+
+  useEffect(() => {
+    const notificationCount = async () => {
+      const res=await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/notification/count/${userData.id}`
       );
-  
-      if (res.data) {
-        router.push("/");
-        toast.success("logout success");
-      } else {
-        toast.error("logout fail");
-      }
+      setUnreadNotification(res.data.unreadCount)
     };
+     notificationCount()
+  }, [userData]);
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full justify-between p-6">
@@ -138,7 +149,10 @@ const Sidebar = ({ children }: any) => {
         className="pt-4 border-t border-yellow-500/60"
         whileHover={{ scale: 1.02, backgroundColor: "#27272a" }}
       >
-        <button onClick={handleLogout} className="flex items-center justify-between w-full p-2 text-zinc-400 hover:text-white rounded-lg group">
+        <button
+          onClick={handleLogout}
+          className="flex items-center justify-between w-full p-2 text-zinc-400 hover:text-white rounded-lg group"
+        >
           <div className="flex items-center min-w-0">
             <span className="text-sm mr-2 font-medium truncate">
               <LogOut />
@@ -208,7 +222,7 @@ const Sidebar = ({ children }: any) => {
                 variant={"destructive"}
                 className="absolute left-3 h-4 w-4 text-center -top-1"
               >
-                3
+                {unreadNotification}
               </Badge>
               <Bell
                 size={30}
@@ -221,7 +235,7 @@ const Sidebar = ({ children }: any) => {
             </div>
 
             <Button
-            onClick={()=>router.push("/user/setting")}
+              onClick={() => router.push("/user/setting")}
               variant="ghost"
               size="icon"
               className="text-zinc-400 hover:bg-zinc-900 hover:text-white"

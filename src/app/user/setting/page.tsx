@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import { Clipboard, Check } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const SettingsPage = () => {
   const [user, setUser] = useState<any>(null);
@@ -24,6 +26,8 @@ const SettingsPage = () => {
   const [kycDocs, setKycDocs] = useState<any>([]);
   const [previewKycDocs, setPreviewKycDocs] = useState<any>([]);
 
+  const [copied, setCopied] = useState(false);
+
   // Fetch User Data
   useEffect(() => {
     if (!userId) return;
@@ -44,6 +48,14 @@ const SettingsPage = () => {
       })
       .catch(() => toast.error("Failed to load settings"));
   }, [userId]);
+
+  // Copy User ID
+  const copyUserId = () => {
+    navigator.clipboard.writeText(userId);
+    setCopied(true);
+    toast.success("User ID copied!");
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   // Submit Form
   const handleSubmit = async () => {
@@ -80,6 +92,28 @@ const SettingsPage = () => {
 
       {/* MAIN CARD */}
       <div className="bg-[#111] border border-zinc-800 p-6 rounded-2xl shadow-xl space-y-8">
+        {/* USER ID */}
+        <div className="flex items-center justify-between bg-zinc-900 p-3 rounded-xl border border-zinc-700">
+          <div>
+            <label className="text-sm text-zinc-400">User ID</label>
+            <Input
+              type="text"
+              value={userId}
+              readOnly
+              className="bg-zinc-900 text-white min-w-68 mt-1 p-2 rounded-lg border border-zinc-700 outline-none cursor-not-allowed overflow-x-auto"
+            />
+          </div>
+          <button
+            onClick={copyUserId}
+            className="ml-4 p-2 bg-zinc-800 rounded-lg hover:bg-zinc-700 transition-all"
+          >
+            {copied ? (
+              <Check className="w-5 h-5 text-green-400" />
+            ) : (
+              <Clipboard className="w-5 h-5 text-white" />
+            )}
+          </button>
+        </div>
 
         {/* AVATAR SECTION */}
         <div className="flex items-center gap-6 flex-wrap">

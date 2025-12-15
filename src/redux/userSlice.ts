@@ -10,6 +10,7 @@ export interface userState {
   avatarUrl: string;
   kyc: boolean;
   kycStatus: string;
+  balance:number;
 }
 
 const initialState: userState = {
@@ -22,6 +23,7 @@ const initialState: userState = {
   kyc: false,
   address: "",
   kycStatus: "",
+  balance:0,
 };
 const userSlice = createSlice({
   name: "user",
@@ -37,6 +39,7 @@ const userSlice = createSlice({
       state.avatarUrl = action.payload.avatarUrl;
       state.address = action.payload.address;
       state.kycStatus = action.payload.kycStatus;
+      state.balance = action.payload.balance;
     },
   },
 });

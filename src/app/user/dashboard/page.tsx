@@ -59,6 +59,7 @@ interface DashboardResponse {
   totalTrades: number;
   totalBuyUSD: number;
   totalSellUSD: number;
+  totalBalance: any;
   recentActivity: RecentActivity[];
 }
 
@@ -107,7 +108,14 @@ const DashboardPage: React.FC = () => {
           {!loading && data && (
             <>
               {/* ------------------------------ METRICS GRID ------------------------------ */}
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-8">
+                <DashboardMetric
+                  title="Total Balance"
+                  value={`$${data?.totalBalance?.balance || 0}`}
+                  change="You can investment"
+                  icon={Wallet}
+                  iconColor="text-yellow-500"
+                />
                 <DashboardMetric
                   title="Total Trades"
                   value={data.totalTrades.toString()}
@@ -123,6 +131,7 @@ const DashboardPage: React.FC = () => {
                   icon={DollarSign}
                   iconColor="text-green-500"
                 />
+              <QuickActionsCard router={router} />
 
                 <DashboardMetric
                   title="Total Sell (USD)"
@@ -132,7 +141,6 @@ const DashboardPage: React.FC = () => {
                   iconColor="text-orange-500"
                 />
 
-                <QuickActionsCard router={router} />
               </div>
 
               {/* ------------------------------ CHART + TABLE ------------------------------ */}
@@ -240,23 +248,28 @@ const QuickActionsCard: React.FC<QuickActionsCardProps> = ({ router }) => (
 
     <CardContent className="flex flex-col space-y-3">
       <Button
-        
+        onClick={() => router.push("/user/trade")}
         className="w-full bg-zinc-800 hover:bg-zinc-700 text-white justify-start"
       >
         <ArrowUpRight className="w-4 h-4 mr-2 text-green-400" />
-        <Link href="/user/trade">Withdraw Funds</Link> 
+        Withdraw Funds
       </Button>
 
-      <Button className="w-full bg-zinc-800 hover:bg-zinc-700 text-white justify-start">
+      <Button
+        onClick={() => router.push("/user/trade")}
+        className="w-full bg-zinc-800 hover:bg-zinc-700 text-white justify-start"
+      >
         <ArrowDownLeft className="w-4 h-4 mr-2 text-red-400" />
-         <Link href="/user/trade">Execute New Trade</Link>  
+        Execute New Trade
       </Button>
-   <Link href="/user/trade">
-      <Button  className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold justify-start">
+
+      <Button
+        onClick={() => router.push("/user/myinvestment")}
+        className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold justify-start"
+      >
         <DollarSign className="w-4 h-4 mr-2" />
-       Fund Account 
+        My Investment
       </Button>
-      </Link>  
     </CardContent>
   </Card>
 );

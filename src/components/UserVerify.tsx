@@ -74,6 +74,7 @@ export default function VerifyUser() {
               address: data.address,
               avatarUrl: data.avatarUrl,
               kyc: data.kyc,
+              balance:data.balance,
               kycStatus: data.kycStatus,
             })
           );

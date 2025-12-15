@@ -8,7 +8,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex w-full bg-black text-white">
+    <div className="flex scrollbar-none w-full bg-black text-white">
       {/* Sidebar is fixed, so layout must include left padding */}
       <Sidebar />
 

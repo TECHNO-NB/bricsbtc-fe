@@ -308,8 +308,8 @@ function FeatureCard({
   desc: string;
 }) {
   return (
-    <div className="bg-slate-900/50 border-white/5 hover:border-orange-500/30 transition-colors group rounded-xl shadow-lg">
-      <div className="p-6">
+    <div className="bg-slate-900/50 scrollbar-none border-white/5 hover:border-orange-500/30 transition-colors group rounded-xl shadow-lg">
+      <div className="p-6"> 
         <div className="mb-4 bg-slate-950 w-fit p-3 rounded-xl border border-white/5 group-hover:scale-110 transition-transform">
           {icon}
         </div>
