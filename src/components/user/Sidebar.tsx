@@ -222,7 +222,7 @@ const Sidebar = ({ children }: any) => {
                 variant={"destructive"}
                 className="absolute left-3 h-4 w-4 text-center -top-1"
               >
-                {unreadNotification}
+                {unreadNotification || 0}
               </Badge>
               <Bell
                 size={30}
