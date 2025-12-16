@@ -2,17 +2,17 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default function Footer() {
+export default function UserFooter() {
   const footerLinks = [
     {
       title: "Pages",
       items: [
-        { label: "Home", href: "/" },
-        { label: "Learn", href: "/learn" },
+        { label: "Home", href: "/user/dashboard" },
+        { label: "Learn", href: "/user/learn" },
         { label: "Login", href: "/auth/login" },
         { label: "Register", href: "/auth/register" },
-        { label: "Getting Started", href: "/" },
-        { label: "Terms", href: "/term" },
+        { label: "Getting Started", href: "/user/dashboard" },
+        { label: "Terms", href: "/user/term" },
       ],
     },
     {
@@ -29,11 +29,11 @@ export default function Footer() {
     {
       title: "Other",
       items: [
-        { label: "Avoid Scams", href: "/avoidscam" },
-        { label: "Legal", href: "/legal" },
-        { label: "Privacy Policy", href: "/privacy" },
-        { label: "Terms of Use", href: "/term" },
-        { label: "Documentation", href: "/learn" },
+        { label: "Avoid Scams", href: "/user/avoidscam" },
+        { label: "Legal", href: "/user/legal" },
+        { label: "Privacy Policy", href: "/user/privacy" },
+        { label: "Terms of Use", href: "/user/term" },
+        { label: "Documentation", href: "/user/learn" },
       ],
     },
   ];
@@ -61,7 +61,7 @@ export default function Footer() {
               <Button asChild className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-8 rounded-full transition-all">
                 <Link href="/auth/login">Login</Link>
               </Button>
-              <Button asChild variant="outline" className="border-slate-700 bg  text-white px-8 rounded-full transition-all">
+              <Button asChild className="border-slate-700 bg   px-8 rounded-full transition-all">
                 <Link href="/auth/register">Register</Link>
               </Button>
             </div>

@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import Sidebar from "@/components/user/Sidebar";
+import UserFooter from "@/components/user/UserFooter";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
@@ -44,8 +45,7 @@ export default function RootLayout({
             {children}
           </Sidebar>
           <div className=" md:ml-64">
-
-          <Footer />
+            <UserFooter/>
           </div>
         </div>
       </body>
