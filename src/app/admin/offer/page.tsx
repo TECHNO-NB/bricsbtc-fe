@@ -217,7 +217,7 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="p-4">
+    <div className="p-4 ">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">Offers</h2>
         <Button onClick={() => setOpenCreate(true)}>+ Add Offer</Button>
@@ -270,7 +270,7 @@ const Page = () => {
                       {offer.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
-                  <td className="p-4 text-center flex justify-center gap-2">
+                  <td className="p-4 text-center flex justify-center gap-2 text-black">
                     <Button
                       size="sm"
                       variant="outline"
@@ -301,22 +301,26 @@ const Page = () => {
       )}
 
       {/* ================== Create Offer Dialog ================== */}
-      <Dialog open={openCreate} onOpenChange={setOpenCreate}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create Offer</DialogTitle>
-            <DialogDescription>
-              Fill in the details to create a new offer
-            </DialogDescription>
-          </DialogHeader>
+  <Dialog open={openCreate} onOpenChange={setOpenCreate}>
+      <DialogContent className="max-h-[85vh] overflow-hidden">
+        {/* HEADER */}
+        <DialogHeader>
+          <DialogTitle>Create Offer</DialogTitle>
+          <DialogDescription>
+            Fill in the details to create a new offer
+          </DialogDescription>
+        </DialogHeader>
 
-          <div className="space-y-4 mt-4">
+        {/* SCROLLABLE FORM AREA */}
+        <div className="mt-4 max-h-[60vh] overflow-y-auto pr-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Crypto */}
             <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
+              <label className="block mb-1 text-sm font-medium">
                 Crypto
               </label>
               <Select value={cryptoId} onValueChange={setCryptoId}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger>
                   <SelectValue placeholder="Select Crypto" />
                 </SelectTrigger>
                 <SelectContent>
@@ -329,12 +333,13 @@ const Page = () => {
               </Select>
             </div>
 
+            {/* Payment */}
             <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
+              <label className="block mb-1 text-sm font-medium">
                 Payment Method
               </label>
               <Select value={paymentId} onValueChange={setPaymentId}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger>
                   <SelectValue placeholder="Select Payment Method" />
                 </SelectTrigger>
                 <SelectContent>
@@ -347,12 +352,13 @@ const Page = () => {
               </Select>
             </div>
 
+            {/* Offer Type */}
             <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
+              <label className="block mb-1 text-sm font-medium">
                 Offer Type
               </label>
               <Select value={type} onValueChange={setType}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger>
                   <SelectValue placeholder="Offer Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -362,56 +368,61 @@ const Page = () => {
               </Select>
             </div>
 
+            {/* Price */}
             <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
-                Price
+              <label className="block mb-1 text-sm font-medium">
+                Price $
               </label>
               <Input
                 type="number"
                 placeholder="Price"
-                value={price}
+                value={price ?? ""}
                 onChange={(e) => setPrice(Number(e.target.value))}
               />
             </div>
 
+            {/* Margin */}
             <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
+              <label className="block mb-1 text-sm font-medium">
                 Margin %
               </label>
               <Input
                 type="number"
                 placeholder="Margin %"
-                value={marginPercent}
+                value={marginPercent ?? ""}
                 onChange={(e) => setMarginPercent(Number(e.target.value))}
               />
             </div>
 
+            {/* Min Limit */}
             <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
+              <label className="block mb-1 text-sm font-medium">
                 Min Limit $
               </label>
               <Input
                 type="number"
                 placeholder="Min Limit"
-                value={minLimit}
+                value={minLimit ?? ""}
                 onChange={(e) => setMinLimit(Number(e.target.value))}
               />
             </div>
 
+            {/* Max Limit */}
             <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
+              <label className="block mb-1 text-sm font-medium">
                 Max Limit $
               </label>
               <Input
                 type="number"
                 placeholder="Max Limit"
-                value={maxLimit}
+                value={maxLimit ?? ""}
                 onChange={(e) => setMaxLimit(Number(e.target.value))}
               />
             </div>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
+            {/* Location (full width) */}
+            <div className="md:col-span-2">
+              <label className="block mb-1 text-sm font-medium">
                 Location
               </label>
               <Input
@@ -422,147 +433,163 @@ const Page = () => {
               />
             </div>
           </div>
+        </div>
 
-          <DialogFooter className="flex justify-between mt-4">
-            <Button variant="outline" onClick={() => setOpenCreate(false)}>
-              Cancel
-            </Button>
-            <Button onClick={createOffer}>Create</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        {/* FOOTER */}
+        <DialogFooter className="flex justify-between mt-4">
+          <Button variant="outline" onClick={() => setOpenCreate(false)}>
+            Cancel
+          </Button>
+          <Button onClick={createOffer}>Create</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
 
       {/* ================== Edit Offer Dialog ================== */}
-      <Dialog open={openEdit} onOpenChange={setOpenEdit}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Offer</DialogTitle>
-            <DialogDescription>
-              Edit the details of this offer
-            </DialogDescription>
-          </DialogHeader>
+   <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+  <DialogContent className="max-h-[85vh] overflow-hidden">
+    {/* HEADER */}
+    <DialogHeader>
+      <DialogTitle>Edit Offer</DialogTitle>
+      <DialogDescription>
+        Edit the details of this offer
+      </DialogDescription>
+    </DialogHeader>
 
-          <div className="space-y-4 mt-4">
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
-                Crypto
-              </label>
-              <Select value={cryptoId} onValueChange={setCryptoId}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Crypto" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cryptos.map((c: any) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name} ({c.symbol})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+    {/* SCROLLABLE FORM */}
+    <div className="mt-4 max-h-[60vh] overflow-y-auto pr-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Crypto */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">
+            Crypto
+          </label>
+          <Select value={cryptoId} onValueChange={setCryptoId}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select Crypto" />
+            </SelectTrigger>
+            <SelectContent>
+              {cryptos.map((c: any) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.name} ({c.symbol})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
-                Payment Method
-              </label>
-              <Select value={paymentId} onValueChange={setPaymentId}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Payment Method" />
-                </SelectTrigger>
-                <SelectContent>
-                  {payments.map((p: any) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      {p.name} ({p.accountNo || "No account"})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+        {/* Payment */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">
+            Payment Method
+          </label>
+          <Select value={paymentId} onValueChange={setPaymentId}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select Payment Method" />
+            </SelectTrigger>
+            <SelectContent>
+              {payments.map((p: any) => (
+                <SelectItem key={p.id} value={p.id}>
+                  {p.name} ({p.accountNo || "No account"})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
-                Offer Type
-              </label>
-              <Select value={type} onValueChange={setType}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Offer Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="BUY">BUY</SelectItem>
-                  <SelectItem value="SELL">SELL</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+        {/* Offer Type */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">
+            Offer Type
+          </label>
+          <Select value={type} onValueChange={setType}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Offer Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="BUY">BUY</SelectItem>
+              <SelectItem value="SELL">SELL</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
-                Price
-              </label>
-              <Input
-                type="number"
-                placeholder="Price"
-                value={price}
-                onChange={(e) => setPrice(Number(e.target.value))}
-              />
-            </div>
+        {/* Price */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">
+            Price $
+          </label>
+          <Input
+            type="number"
+            placeholder="Price"
+            value={price ?? ""}
+            onChange={(e) => setPrice(Number(e.target.value))}
+          />
+        </div>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
-                Margin %
-              </label>
-              <Input
-                type="number"
-                placeholder="Margin %"
-                value={marginPercent}
-                onChange={(e) => setMarginPercent(Number(e.target.value))}
-              />
-            </div>
+        {/* Margin */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">
+            Margin %
+          </label>
+          <Input
+            type="number"
+            placeholder="Margin %"
+            value={marginPercent ?? ""}
+            onChange={(e) => setMarginPercent(Number(e.target.value))}
+          />
+        </div>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
-                Min Limit
-              </label>
-              <Input
-                type="number"
-                placeholder="Min Limit"
-                value={minLimit}
-                onChange={(e) => setMinLimit(Number(e.target.value))}
-              />
-            </div>
+        {/* Min Limit */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">
+            Min Limit $
+          </label>
+          <Input
+            type="number"
+            placeholder="Min Limit"
+            value={minLimit ?? ""}
+            onChange={(e) => setMinLimit(Number(e.target.value))}
+          />
+        </div>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
-                Max Limit
-              </label>
-              <Input
-                type="number"
-                placeholder="Max Limit"
-                value={maxLimit}
-                onChange={(e) => setMaxLimit(Number(e.target.value))}
-              />
-            </div>
+        {/* Max Limit */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">
+            Max Limit $
+          </label>
+          <Input
+            type="number"
+            placeholder="Max Limit"
+            value={maxLimit ?? ""}
+            onChange={(e) => setMaxLimit(Number(e.target.value))}
+          />
+        </div>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-200">
-                Location
-              </label>
-              <Input
-                type="text"
-                placeholder="Location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-              />
-            </div>
-          </div>
+        {/* Location – full width */}
+        <div className="md:col-span-2">
+          <label className="block mb-1 text-sm font-medium">
+            Location
+          </label>
+          <Input
+            type="text"
+            placeholder="Location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          />
+        </div>
+      </div>
+    </div>
 
-          <DialogFooter className="flex justify-between mt-4">
-            <Button variant="outline" onClick={() => setOpenEdit(false)}>
-              Cancel
-            </Button>
-            <Button onClick={editOffer}>Save</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+    {/* FOOTER */}
+    <DialogFooter className="flex justify-between mt-4">
+      <Button variant="outline" onClick={() => setOpenEdit(false)}>
+        Cancel
+      </Button>
+      <Button onClick={editOffer}>Save</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
 
       {/* ================== Delete Offer Dialog ================== */}
       <Dialog open={openDelete} onOpenChange={setOpenDelete}>

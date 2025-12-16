@@ -94,7 +94,7 @@ export default function BuyUSDTInterface() {
     }
 
     const calculated = num / offer!.price;
-    setAmountUSDT(calculated.toFixed(2));
+    setAmountUSDT(calculated);
   };
 
   // ⭐ Final validation before trade creation
