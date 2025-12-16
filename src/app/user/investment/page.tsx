@@ -271,9 +271,6 @@ export default function InvestmentPlansPage() {
           ))}
         </div>
 
-        <footer className="mt-20 text-center text-slate-600 text-sm">
-          © 2019 BRICSBTC. All rights reserved.
-        </footer>
       </div>
     </div>
   );
