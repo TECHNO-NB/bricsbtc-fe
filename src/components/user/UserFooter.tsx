@@ -95,7 +95,7 @@ export default function UserFooter() {
         {/* --- Bottom Section: Copyright --- */}
         <div className="pt-8 border-t border-slate-800/60 flex flex-col items-center space-y-4 text-center">
           <p className="text-xs sm:text-sm text-slate-500 tracking-wide uppercase">
-            &copy; 2019 bricbtc.com
+           &copy; bricbtc.com @ 2009-2025
           </p>
           <p className="text-[13px] text-slate-600 max-w-2xl leading-loose">
             Bitcoin Project 2009-{new Date().getFullYear()} • Released under the 
