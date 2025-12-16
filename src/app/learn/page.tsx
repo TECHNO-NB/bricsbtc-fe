@@ -12,7 +12,6 @@ import {
   ArrowRight 
 } from 'lucide-react'
 import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
 
 const LearnPage = () => {
   // State for FAQ Accordion
@@ -157,7 +156,7 @@ const LearnPage = () => {
         </section>
 
       </div>
-      <Footer/>
+      
     </div>
   )
 }
