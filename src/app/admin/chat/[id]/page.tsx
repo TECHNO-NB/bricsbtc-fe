@@ -4,12 +4,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Send, User, Bot } from "lucide-react";
 import { useParams } from "next/navigation";
+import { useSelector } from "react-redux";
 
 const Page = () => {
   const params = useParams();
-  const toUserId = params?.id; // the person you are chatting with
+  const toUserId = params?.id; 
 
-  const fromUserId ='9ba79806-a12f-421b-b1d2-2919f48a52aa';
+  const userData=useSelector((state:any)=>state.user);
+
 
   const [messages, setMessages] = useState<any[]>([]);
   const [input, setInput] = useState("");
@@ -18,7 +20,7 @@ const Page = () => {
   const loadMessages = async () => {
     try {
       const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/messages/${fromUserId}/${toUserId}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/messages/${userData.id}/${toUserId}`
       );
 
       if (data.success) {
@@ -30,11 +32,11 @@ const Page = () => {
   };
 
   useEffect(() => {
-    if (fromUserId && toUserId) loadMessages();
+    if (userData.id && toUserId) loadMessages();
 
     const interval = setInterval(loadMessages, 3000);
     return () => clearInterval(interval);
-  }, [fromUserId, toUserId]);
+  }, [userData.id, toUserId]);
 
   // ===================== SEND MESSAGE =====================
   const sendMessage = async () => {
@@ -44,7 +46,7 @@ const Page = () => {
       const { data } = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/messages`,
         {
-          fromUserId,
+          fromUserId:userData.id,
           toUserId,
           body: input,
         }
@@ -80,10 +82,10 @@ const Page = () => {
           <div
             key={msg.id}
             className={`flex items-end ${
-              msg.fromUserId == fromUserId ? "justify-end" : "justify-start"
+              msg.fromUserId == userData?.id ? "justify-end" : "justify-start"
             }`}
           >
-            {msg.fromUserId != fromUserId && (
+            {msg.fromUserId != userData?.id && (
               <div className="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center mr-2">
                 <Bot className="h-5 w-5" />
               </div>
@@ -91,7 +93,7 @@ const Page = () => {
 
             <div
               className={`max-w-[75%] px-4 py-2 rounded-2xl text-sm shadow-md ${
-                msg.fromUserId == fromUserId
+                msg.fromUserId == userData?.id
                   ? "bg-indigo-600 text-white rounded-br-none"
                   : "bg-neutral-800 text-neutral-200 rounded-bl-none"
               }`}
@@ -105,7 +107,7 @@ const Page = () => {
               </div>
             </div>
 
-            {msg.fromUserId == fromUserId && (
+            {msg.fromUserId == userData?.id && (
               <div className="h-10 w-10 rounded-full bg-violet-600 flex items-center justify-center ml-2">
                 <User className="h-5 w-5" />
               </div>
