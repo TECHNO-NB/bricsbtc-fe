@@ -35,6 +35,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 type FormDataT = {
   email: string;
@@ -47,7 +48,7 @@ type FormDataT = {
 
 export default function RegisterPage() {
   const totalSteps = 3;
-
+ const router=useRouter();
   const COUNTRIES = [
     { code: "US", name: "United States" },
     { code: "CA", name: "Canada" },
@@ -654,8 +655,8 @@ export default function RegisterPage() {
             )}
 
             {isSuccess && (
-              <Button className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold">
-                Go to Dashboard
+              <Button onClick={()=>router.push("/auth/login")} className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold">
+                Go to Login
               </Button>
             )}
           </CardFooter>
@@ -664,7 +665,7 @@ export default function RegisterPage() {
         {!isSuccess && (
           <p className="text-center text-zinc-500 text-sm mt-6">
             Already have an account?{" "}
-            <span className="text-yellow-500 font-medium cursor-pointer hover:underline">
+            <span onClick={()=>router.push("/auth/login")} className="text-yellow-500 font-medium cursor-pointer hover:underline">
               Log in here
             </span>
           </p>
