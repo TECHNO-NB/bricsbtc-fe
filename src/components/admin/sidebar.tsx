@@ -29,7 +29,6 @@ import { addUser } from "@/redux/userSlice";
 const menuItems = [
   { id: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "/admin/users", label: "Users", icon: Users },
-  { id: "/admin/networks", label: "Networks", icon: Network },
   { id: "/admin/crypto", label: "Cryptocurrencies", icon: Coins },
   { id: "/admin/paymentmethod", label: "Payment Methods", icon: CreditCard },
   { id: "/admin/offer", label: "Offers", icon: List },
