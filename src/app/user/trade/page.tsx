@@ -102,7 +102,7 @@ export default function CryptoMarket() {
   return (
     <div className="w-full min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden font-sans">
       {/* Background */}
-      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-blue-900/20 via-slate-950/50 to-slate-950 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-[500px] bg-linear-to-b from-blue-900/20 via-slate-950/50 to-slate-950 pointer-events-none" />
       <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 py-10">
@@ -268,12 +268,13 @@ export default function CryptoMarket() {
                     {/* Right */}
                     <div className="lg:w-1/4 text-right flex flex-col items-end gap-2">
                       <p className="text-2xl font-bold text-emerald-400">
-                        {activeTab === "BUY" ? `$${offer.price}` : `${offer.price} ${offer.crypto.symbol}`}
+                        ${offer.price}
                       </p>
 
                       <p className="text-xs text-slate-500">
-                        Price per {activeTab === "BUY" ? offer.crypto.symbol : `USD`}
+                        Price per {offer.crypto.symbol}
                       </p>
+
                       <Button
                         onClick={() => handleClick(offer.id)}
                         className={`px-6 rounded-xl font-semibold transition-all ${
