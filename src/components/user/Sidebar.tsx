@@ -42,7 +42,8 @@ const Sidebar = ({ children }: any) => {
     { name: "Investment", icon: DollarSign, href: "/user/investment" },
     { name: "My Investment", icon: DollarSign, href: "/user/myinvestment" },
     { name: "Deposit", icon: BanknoteArrowUp, href: "/user/deposit" },
-    { name: "Send Balance", icon: DollarSign, href: "/user/sendmoney" },
+     { name: "Gift Investment", icon: DollarSign, href: "/user/otherinvestment" },
+   
 
   ];
 

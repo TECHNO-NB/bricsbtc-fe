@@ -104,6 +104,27 @@ const page = () => {
     }
   };
 
+  // Helper to calculate crypto and USD amounts
+  const getAmounts = (trade: any) => {
+    if (!trade?.offer) return { cryptoAmount: 0, usdAmount: 0 };
+
+    const isBuy = trade.offer.type === "BUY";
+    let cryptoAmount: number;
+    let usdAmount: number;
+
+    if (isBuy) {
+      // User buys crypto: pays USD, receives crypto
+      usdAmount = trade.amount;
+      cryptoAmount = trade.amount / trade.offer.price;
+    } else {
+      // User sells crypto: pays crypto, receives USD
+      cryptoAmount = trade.amount;
+      usdAmount = trade.amount * trade.offer.price;
+    }
+
+    return { cryptoAmount, usdAmount };
+  };
+
   return (
     <div>
       {/* Header with Search and Filter */}
@@ -152,29 +173,39 @@ const page = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredTrades.map((trade) => (
-                <tr key={trade.id} className="border-b border-gray-800 hover:bg-gray-800/50">
-                  <td className="p-4 text-gray-400">#{trade.id}</td>
-                  <td className="p-4">{trade.offer?.crypto?.symbol} {trade.offer?.type} #{trade.offer?.id.slice(-4)}</td>
-                  <td className="p-4">{trade.offer?.type === "BUY" ? trade.buyer?.fullName : trade.seller?.fullName}</td>
-                  <td className="p-4 text-right font-medium">{trade.amount}</td>
-                  <td className="p-4 text-center">
-                    <span
-                      className="px-3 py-1 rounded-md text-sm"
-                      style={{
-                        backgroundColor: `${getStatusColor(trade.status)}22`,
-                        color: getStatusColor(trade.status),
-                      }}
-                    >
-                      {trade.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-gray-400">{new Date(trade.createdAt).toLocaleDateString()}</td>
-                  <td className="p-4 text-center">
-                    <Button onClick={() => handleView(trade)}>View</Button>
-                  </td>
-                </tr>
-              ))}
+              {filteredTrades.map((trade) => {
+                const { cryptoAmount, usdAmount } = getAmounts(trade);
+                return (
+                  <tr key={trade.id} className="border-b border-gray-800 hover:bg-gray-800/50">
+                    <td className="p-4 text-gray-400">#{trade.id}</td>
+                    <td className="p-4">
+                      {trade.offer?.crypto?.symbol} {trade.offer?.type} #{trade.offer?.id.slice(-4)}
+                    </td>
+                    <td className="p-4">
+                      {trade.offer?.type === "BUY" ? trade.buyer?.fullName : trade.seller?.fullName}
+                    </td>
+                    <td className="p-4 text-right font-medium">
+                      {cryptoAmount.toFixed(6)} {trade.offer.crypto.symbol} <br />
+                      ${usdAmount.toFixed(2)}
+                    </td>
+                    <td className="p-4 text-center">
+                      <span
+                        className="px-3 py-1 rounded-md text-sm"
+                        style={{
+                          backgroundColor: `${getStatusColor(trade.status)}22`,
+                          color: getStatusColor(trade.status),
+                        }}
+                      >
+                        {trade.status}
+                      </span>
+                    </td>
+                    <td className="p-4 text-gray-400">{new Date(trade.createdAt).toLocaleDateString()}</td>
+                    <td className="p-4 text-center">
+                      <Button onClick={() => handleView(trade)}>View</Button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           {filteredTrades.length === 0 && <p className="p-4 text-gray-400 text-center">No trades found.</p>}
@@ -189,32 +220,42 @@ const page = () => {
             <DialogDescription>View or modify this trade.</DialogDescription>
           </DialogHeader>
 
-          {selectedTrade && (
-            <div className="space-y-3 text-black">
-              <p><strong>Trade ID:</strong> {selectedTrade.id}</p>
-              <p><strong>{selectedTrade.offer.type==="BUY" ? "Buyer" : "Seller"}:</strong> {selectedTrade.offer.type==="BUY" ? selectedTrade.buyer.fullName : selectedTrade.seller.fullName} ({selectedTrade.offer.type==="BUY" ? selectedTrade.buyer.email : selectedTrade.seller.email})</p>
-              <p><strong>Amount:</strong> {selectedTrade.amount}</p>
-              <p>
-                <strong>Status:</strong>
-                <select
-                  className="ml-2 border rounded px-2 py-1 bg-gray-900 text-white"
-                  value={statusUpdate}
-                  onChange={(e) => setStatusUpdate(e.target.value)}
-                >
-                  <option value="PENDING">PENDING</option>
-                  <option value="ACTIVE">ACTIVE</option>
-                  <option value="COMPLETED">COMPLETED</option>
-                  <option value="CANCELLED">CANCELLED</option>
-                </select>
-              </p>
-              <p><strong>Offer Type:</strong> {selectedTrade.offer.type}</p>
-              <p><strong>Crypto:</strong> {selectedTrade.offer.crypto.name} ({selectedTrade.offer.crypto.symbol})</p>
-              <p><strong>Location:</strong> {selectedTrade.offer.location}</p>
-            </div>
-          )}
+          {selectedTrade && (() => {
+            const { cryptoAmount, usdAmount } = getAmounts(selectedTrade);
+            return (
+              <div className="space-y-3 text-black">
+                <p><strong>Trade ID:</strong> {selectedTrade.id}</p>
+                <p>
+                  <strong>{selectedTrade.offer.type==="BUY" ? "Buyer" : "Seller"}:</strong> 
+                  {selectedTrade.offer.type==="BUY" ? selectedTrade.buyer.fullName : selectedTrade.seller?.fullName} 
+                  ({selectedTrade.offer.type==="BUY" ? selectedTrade.buyer.email : selectedTrade.seller?.email})
+                </p>
+                <p>
+                  <strong>Amount:</strong> {cryptoAmount} {selectedTrade.offer.crypto.symbol} <br/>
+                  ${usdAmount.toFixed(2)}
+                </p>
+                <p>
+                  <strong>Status:</strong>
+                  <select
+                    className="ml-2 border rounded px-2 py-1 bg-gray-900 text-white"
+                    value={statusUpdate}
+                    onChange={(e) => setStatusUpdate(e.target.value)}
+                  >
+                    <option value="PENDING">PENDING</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="COMPLETED">COMPLETED</option>
+                    <option value="CANCELLED">CANCELLED</option>
+                  </select>
+                </p>
+                <p><strong>Offer Type:</strong> {selectedTrade.offer.type}</p>
+                <p><strong>Crypto:</strong> {selectedTrade.offer.crypto.name} ({selectedTrade.offer.crypto.symbol})</p>
+                <p><strong>Location:</strong> {selectedTrade.offer.location}</p>
+              </div>
+            );
+          })()}
 
           <DialogFooter className="flex justify-between">
-            <Button variant="destructive" onClick={() => handleDelete(selectedTrade.id)}>Delete</Button>
+            <Button variant="destructive" onClick={() => handleDelete(selectedTrade?.id)}>Delete</Button>
             <Button onClick={handleStatusChange}>Update Status</Button>
           </DialogFooter>
         </DialogContent>

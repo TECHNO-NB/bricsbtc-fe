@@ -7,7 +7,14 @@ import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Clock, DollarSign, Mail, ListOrdered, CheckCircle, Lock } from "lucide-react";
+import {
+  Clock,
+  DollarSign,
+  Mail,
+  ListOrdered,
+  CheckCircle,
+  Lock,
+} from "lucide-react";
 import { useSelector } from "react-redux";
 
 export default function PaymentVerification() {
@@ -28,7 +35,9 @@ export default function PaymentVerification() {
         const data = res.data.data;
         setTrade(data);
         // Start timer from hardcoded 60 minutes
-        setTimeLeft(data.paymentWindowMinutes ? data.paymentWindowMinutes * 60 : 3600);
+        setTimeLeft(
+          data.paymentWindowMinutes ? data.paymentWindowMinutes * 60 : 3600
+        );
       } catch (err) {
         console.error("Error fetching trade:", err);
       } finally {
@@ -41,7 +50,7 @@ export default function PaymentVerification() {
   // Countdown timer (frontend only)
   useEffect(() => {
     if (timeLeft <= 0) return;
-    const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+    const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
   }, [timeLeft]);
 
@@ -70,14 +79,18 @@ export default function PaymentVerification() {
   if (!trade)
     return <p className="text-red-500 text-center mt-10">Trade not found</p>;
 
-  const isBuy = trade.offer.type === "BUY"; // BUY or SELL
-  const counterparty = trade.offer.user;
+  const isBuy = trade.offer.type === "BUY";
 
-  const amountCrypto = isBuy
-    ? trade.amountUSD / trade.offer.price
-    : trade.amountUSDT;
+  let cryptoAmount: number;
+  let usdAmount: number;
 
-  const displayUSD = isBuy ? trade.amountUSD : amountCrypto * trade.offer.price;
+  if (isBuy) {
+    usdAmount = trade.amountUSD;
+    cryptoAmount = trade.amountUSD / trade.offer.price;
+  } else {
+    cryptoAmount = trade.amountUSD;
+    usdAmount = trade.amountUSD * trade.offer.price;
+  }
 
   const isTimeCritical = timeLeft <= 300 && timeLeft > 0;
 
@@ -105,16 +118,17 @@ export default function PaymentVerification() {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-slate-400">
-                  Amount {trade.offer.type==="BUY" ? "Received": "Paid"  } {trade.crypto.name} ({trade.crypto.symbol})
+                  {isBuy ? "Amount Received" : "Amount Paid"}{" "}
+                  {trade.crypto.name} ({trade.crypto.symbol})
                 </span>
-                <span className="font-bold text-white">
-                  {amountCrypto}
-                </span>
+                <span className="font-bold text-white">{cryptoAmount}</span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-slate-400">{trade.offer.type==="BUY" ? "Amount Paid": "Received"  } (USD)</span>
-                <span className="font-bold text-white">${displayUSD}</span>
+                <span className="text-slate-400">
+                  {isBuy ? "Amount Paid" : "Amount Received"} (USD)
+                </span>
+                <span className="font-bold text-white">${usdAmount}</span>
               </div>
 
               <Separator className="bg-slate-800 my-2" />
@@ -148,13 +162,15 @@ export default function PaymentVerification() {
 
             {/* STEP 1 */}
             <div className="flex gap-4 items-start">
-              <div className="w-8 h-8 flex-shrink-0 bg-indigo-500/10 border border-indigo-500/30 rounded-full flex items-center justify-center text-indigo-400 font-bold">
+              <div className="w-8 h-8 shrink-0 bg-indigo-500/10 border border-indigo-500/30 rounded-full flex items-center justify-center text-indigo-400 font-bold">
                 1
               </div>
 
               <div>
                 <h4 className="font-semibold text-white flex items-center gap-2">
-                  {isBuy ? "Prepare Cash By Mail" : "Wait for Buyer to Send Cash"}
+                  {isBuy
+                    ? "Prepare Cash By Mail"
+                    : "Wait for Buyer to Send Cash"}
                   <Mail className="w-4 h-4" />
                 </h4>
 
@@ -166,10 +182,15 @@ export default function PaymentVerification() {
 
                 {isBuy && (
                   <div className="mt-2 bg-slate-800/50 p-3 rounded-lg border border-slate-700 space-y-1">
-                    <p className="text-xs text-slate-500 uppercase">Recipient Address</p>
-                    <p className="font-mono text-sm text-white">{trade.recipientAddress}</p>
+                    <p className="text-xs text-slate-500 uppercase">
+                      Recipient Address
+                    </p>
+                    <p className="font-mono text-sm text-white">
+                      {trade.recipientAddress}
+                    </p>
                     <p className="text-xs text-red-400 flex items-center gap-1">
-                      <Lock className="w-3 h-3" /> Address valid for {formatTime(timeLeft)}
+                      <Lock className="w-3 h-3" /> Address valid for{" "}
+                      {formatTime(timeLeft)}
                     </p>
                   </div>
                 )}
@@ -180,7 +201,7 @@ export default function PaymentVerification() {
 
             {/* STEP 2 */}
             <div className="flex gap-4 items-start">
-              <div className="w-8 h-8 flex-shrink-0 bg-indigo-500/10 border border-indigo-500/30 rounded-full flex items-center justify-center text-indigo-400 font-bold">
+              <div className="w-8 h-8 shrink-0 bg-indigo-500/10 border border-indigo-500/30 rounded-full flex items-center justify-center text-indigo-400 font-bold">
                 2
               </div>
 
@@ -208,7 +229,8 @@ export default function PaymentVerification() {
               </h3>
 
               <p className="text-sm text-blue-200/80">
-                You can contact support for payment verification or shipping assistance.
+                You can contact support for payment verification or shipping
+                assistance.
               </p>
 
               <Button
