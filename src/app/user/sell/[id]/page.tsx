@@ -99,7 +99,7 @@ export default function SellUSDTInterface() {
         {
           offerId: offer.id,
           buyerId: userData.id,
-          amount: amountUSDT,
+          amount: Number(amountUSDT),
         }
       );
 
@@ -235,7 +235,7 @@ export default function SellUSDTInterface() {
           </div>
 
           <div className="lg:col-span-5 space-y-6">
-            <Card className="bg-gradient-to-br from-red-950/40 to-slate-900/40 backdrop-blur-md border-red-900/30">
+            <Card className="bg-linear-to-br from-red-950/40 to-slate-900/40 backdrop-blur-md border-red-900/30">
               <CardContent className="p-6">
                 <h3 className="text-slate-400 text-sm font-medium">
                   Current Price
